@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  tree_depth: 1
+  leaf_flag: false
+  parent_id: 1
+
+two:
+  name: MyString
+  tree_depth: 1
+  leaf_flag: false
+  parent_id: 1

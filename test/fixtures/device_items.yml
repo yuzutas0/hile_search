@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  width: 1
+  height: 1
+  depth: 1
+  device_brand_id: 1
+
+two:
+  name: MyString
+  width: 1
+  height: 1
+  depth: 1
+  device_brand_id: 1
