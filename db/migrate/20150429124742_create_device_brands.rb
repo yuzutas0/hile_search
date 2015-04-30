@@ -1,7 +1,7 @@
 class CreateDeviceBrands < ActiveRecord::Migration
   def change
     create_table :device_brands do |t|
-      t.string :name, :null => false
+      t.string :name, :null => false, :unique => true
       t.integer :tree_depth, :null => false, :default => 0
       t.boolean :leaf_flag, :null => false, :default => true
       t.integer :parent_id
