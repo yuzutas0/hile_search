@@ -8,7 +8,6 @@ class CreateDeviceBrands < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :device_brands, :tree_depth
     add_index :device_brands, :parent_id
   end
 end

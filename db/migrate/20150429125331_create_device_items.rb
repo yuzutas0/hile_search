@@ -10,5 +10,8 @@ class CreateDeviceItems < ActiveRecord::Migration
       t.timestamps
     end
     add_index :device_items, :device_brand_id
+    add_index :device_items, :width
+    add_index :device_items, :height
+    add_index :device_items, :depth
   end
 end
