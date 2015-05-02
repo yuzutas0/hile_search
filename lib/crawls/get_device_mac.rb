@@ -7,9 +7,6 @@ class Crawls::GetDeviceMac
 	require 'open-uri'
 	require 'kconv'
 	require 'nokogiri'
-	
-	@mac_book_pro_retina_url = 'http://www.apple.com/jp/macbook-pro/specs-retina/'
-	@mac_book_air_url = 'http://www.apple.com/jp/macbook-air/specs.html'
 
 	# Brand
 	#brand = DeviceBrand.new(:name => 'Mac')
@@ -38,6 +35,7 @@ class Crawls::GetDeviceMac
 	puts "height: " + mac_book.height.to_s
 	puts "depth: "  + mac_book.depth.to_s
 	puts "brand: "  + mac_book.device_brand_id.to_s
+	sleep(1)
 
 
 
@@ -62,21 +60,69 @@ class Crawls::GetDeviceMac
 	puts "height: " + mac_book_pro.height.to_s
 	puts "depth: "  + mac_book_pro.depth.to_s
 	puts "brand: "  + mac_book_pro.device_brand_id.to_s
+	sleep(1)
+
+
 
 	# MacBookProRetina
-	# crawl
-	# name
-	# width
-	# height
-	# depth
-	# insert
+	mac_book_pro_retina_doc = Nokogiri::HTML(open("http://www.apple.com/jp/macbook-pro/specs-retina/", &:read).toutf8)
+	mac_book_pro_retina_post_name = mac_book_pro_retina_doc.at("//*[@id=\"productheader\"]/h2/a/img").attribute('alt')
+
+	for num in 3..4 do
+		mac_book_pro_retina_name_path = "//*[@id=\"content\"]/table/thead/tr/th[" + num.to_s + "]/h1/img"
+		num -= 1
+		mac_book_pro_retina_size_path = "//*[@id=\"content\"]/table/tbody/tr[11]/td[" + num.to_s + "]"
+		mac_book_pro_retina_size_doc = mac_book_pro_retina_doc.at(mac_book_pro_retina_size_path)
+
+		mac_book_pro_retina_pre_name = mac_book_pro_retina_doc.at(mac_book_pro_retina_name_path).attribute('alt')
+		mac_book_pro_retina_name = mac_book_pro_retina_pre_name.to_s + mac_book_pro_retina_post_name.to_s
+		mac_book_pro_retina_width = mac_book_pro_retina_size_doc.to_s.match(/幅/).post_match.match(/\d+/)[0]
+		mac_book_pro_retina_height = mac_book_pro_retina_size_doc.to_s.match(/高/).post_match.match(/\d+/)[0]
+		mac_book_pro_retina_depth = mac_book_pro_retina_size_doc.to_s.match(/奥/).post_match.match(/\d+/)[0]
+
+		mac_book_pro_retina = DeviceItem.new(:name => mac_book_pro_retina_name,
+															:width => mac_book_pro_retina_width.to_i + 1,
+															:height => mac_book_pro_retina_height.to_i + 1,
+															:depth => mac_book_pro_retina_depth.to_i + 1,
+															:device_brand_id => 1)
+		#													:device_brand_id => brand.id)
+		#mac_book_pro_retina.save
+		puts "name: "   + mac_book_pro_retina.name
+		puts "width: "  + mac_book_pro_retina.width.to_s
+		puts "height: " + mac_book_pro_retina.height.to_s
+		puts "depth: "  + mac_book_pro_retina.depth.to_s
+		puts "brand: "  + mac_book_pro_retina.device_brand_id.to_s
+		sleep(1)
+	end
+
+
 
 	# MacBookAir
-	# crawl
-	# name
-	# width
-	# height
-	# depth
-	# insert
+	mac_book_air_doc = Nokogiri::HTML(open("http://www.apple.com/jp/macbook-air/specs.html", &:read).toutf8)
+
+	for num in 2..3 do
+		mac_book_air_name_path = "//*[@id=\"main\"]/table/tr[1]/td[" + num.to_s + "]/span"
+		mac_book_air_size_path = "//*[@id=\"main\"]/table/tr[8]/td[" + num.to_s + "]"
+		mac_book_air_size_doc = mac_book_air_doc.at(mac_book_air_size_path)
+
+		mac_book_air_name = mac_book_air_doc.at(mac_book_air_name_path)
+		mac_book_air_width = mac_book_air_size_doc.to_s.match(/幅/).post_match.match(/\d+/)[0]
+		mac_book_air_height = mac_book_air_size_doc.to_s.match(/高/).post_match.match(/～\d+/)[0].to_s[1..-1]
+		mac_book_air_depth = mac_book_air_size_doc.to_s.match(/奥/).post_match.match(/\d+/)[0]
+
+		mac_book_air = DeviceItem.new(:name => mac_book_air_name,
+															:width => mac_book_air_width.to_i + 1,
+															:height => mac_book_air_height.to_i + 1,
+															:depth => mac_book_air_depth.to_i + 1,
+															:device_brand_id => 1)
+		#													:device_brand_id => brand.id)
+		#mac_book_air.save
+		puts "name: "   + mac_book_air.name
+		puts "width: "  + mac_book_air.width.to_s
+		puts "height: " + mac_book_air.height.to_s
+		puts "depth: "  + mac_book_air.depth.to_s
+		puts "brand: "  + mac_book_air.device_brand_id.to_s
+		sleep(1)
+	end
 
 end
