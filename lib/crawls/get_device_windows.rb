@@ -9,6 +9,7 @@ class Crawls::GetDeviceWindows
 	require 'nokogiri'
 
 
+
 	# TOP
 	top_doc_original = open("http://kakaku.com/pc/note-pc/", &:read).toutf8
 	top_doc_original.gsub!(/<span>.+?<\/span>/, "")
@@ -94,8 +95,59 @@ class Crawls::GetDeviceWindows
 
 
 
-			# 一覧に入る(ページングあるなら2つ目も含む)
-			# PC詳細のスペックページに入る
+			# note-PC's index
+			page_number = 0
+			page_is_end = false
+
+			until page_is_end
+				
+				page_number += 1
+				page_url = sub_subseriesmenu_href + "&pdf_pg=" + page_number.to_s
+				page_doc = Nokogiri::HTML(open(page_url, &:read).toutf8)
+				sleep(2)
+
+
+
+
+				# note-PC's link
+				link_number = 0
+				link_is_end = false
+				link_count = 0
+				link_max = link_path.at("//*[@id=\"itemList\"]/form/div[1]/table/tr/td[1]/p[2]/span[2]").text.to_i
+
+				until link_is_end
+
+					link_number += 1
+					link_path = "//*[@id=\"compTblList\"]/tbody/tr[" + link_number.to_s + "]/td[2]/table/tr/td[1]/a"
+					link_point = link_path.at(link_path)
+
+					next if link_point.blank?
+					link_uri = link_point.attribute('href')
+
+
+
+					# note-PC's detail
+					# link_uriが"/"で終わっていなかったら、というかリンクの形式じゃなかったら処理
+					# link_uri + "spec/#tab"
+					# sleep(2)
+					# //*[@id="mainLeft"]/table/tbody/tr[23]/td[1]
+					#️ 各パラメータに入れる
+					# Modelを配列に入れておいてバルクインサート
+
+
+
+					link_count += 1
+					link_is_end = true if link_count >= link_max
+
+				end
+
+
+
+				page_next = page_doc.at("//*[@id=\"itemList\"]/form/div[1]/table/tr/td[1]/p[2]/a/img").attribute('class')
+				page_is_end = true unless page_next == "pageNextOn"
+
+			end
+
 			# PCのインサート
 
 		end
@@ -114,5 +166,7 @@ class Crawls::GetDeviceWindows
 
 
 	end
+
+
 
 end
