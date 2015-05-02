@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+
 class Crawls::GetDeviceMac
 	# rails runner lib/crawls/get_device_mac.rb
 
@@ -7,11 +8,10 @@ class Crawls::GetDeviceMac
 	require 'kconv'
 	require 'nokogiri'
 	
-	@mac_book_pro_url = 'http://www.apple.com/jp/macbook-pro/specs/'
 	@mac_book_pro_retina_url = 'http://www.apple.com/jp/macbook-pro/specs-retina/'
 	@mac_book_air_url = 'http://www.apple.com/jp/macbook-air/specs.html'
 
-	# Model
+	# Brand
 	#brand = DeviceBrand.new(:name => 'Mac')
 	#brand.tap(&:save)
 
@@ -33,7 +33,6 @@ class Crawls::GetDeviceMac
 														:device_brand_id => 1)
 	#													:device_brand_id => brand.id)
 	#mac_book.save
-
 	puts "name: "   + mac_book.name
 	puts "width: "  + mac_book.width.to_s
 	puts "height: " + mac_book.height.to_s
@@ -43,12 +42,26 @@ class Crawls::GetDeviceMac
 
 
 	# MacBookPro
-	# crawl
-	# name
-	# width
-	# height
-	# depth
-	# insert
+	mac_book_pro_doc = Nokogiri::HTML(open("http://www.apple.com/jp/macbook-pro/specs/", &:read).toutf8)
+	mac_book_pro_size_doc = mac_book_pro_doc.at("//*[@id=\"content\"]/table/tbody/tr[6]")
+
+	mac_book_pro_name = mac_book_pro_doc.at("//*[@id=\"content\"]/table/thead/tr/th[3]/h1/img").attribute('alt')
+	mac_book_pro_width = mac_book_pro_size_doc.to_s.match(/幅/).post_match.match(/\d+/)[0]
+	mac_book_pro_height = mac_book_pro_size_doc.to_s.match(/高/).post_match.match(/\d+/)[0]
+	mac_book_pro_depth = mac_book_pro_size_doc.to_s.match(/奥/).post_match.match(/\d+/)[0]
+
+	mac_book_pro = DeviceItem.new(:name => mac_book_pro_name,
+														:width => mac_book_pro_width.to_i + 1,
+														:height => mac_book_pro_height.to_i + 1,
+														:depth => mac_book_pro_depth.to_i + 1,
+														:device_brand_id => 1)
+	#													:device_brand_id => brand.id)
+	#mac_book_pro.save
+	puts "name: "   + mac_book_pro.name
+	puts "width: "  + mac_book_pro.width.to_s
+	puts "height: " + mac_book_pro.height.to_s
+	puts "depth: "  + mac_book_pro.depth.to_s
+	puts "brand: "  + mac_book_pro.device_brand_id.to_s
 
 	# MacBookProRetina
 	# crawl
