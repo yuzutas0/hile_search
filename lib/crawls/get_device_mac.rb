@@ -2,7 +2,7 @@
 
 
 class Crawls::GetDeviceMac
-	# rails runner lib/crawls/get_device_mac.rb
+	# rails runner Crawls::GetDeviceMac
 
 	require 'open-uri'
 	require 'kconv'
