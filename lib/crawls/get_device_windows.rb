@@ -112,6 +112,11 @@ class Crawls::GetDeviceWindows
 				page_number += 1
 
 				page_url = sub_subseriesmenu_href.to_s + "&pdf_pg=" + page_number.to_s
+				page_doc = Nokogiri::HTML(open(page_url, &:read).toutf8)
+
+=begin
+				# this code is for research after convert error (from Shift-JIS to UTF-8) occured
+				# but, the same error didn't occur next time to use this script
 				begin
 					page_doc = Nokogiri::HTML(open(page_url, &:read).toutf8)
 				rescue Exception => e
@@ -120,6 +125,7 @@ class Crawls::GetDeviceWindows
 					page_doc = Nokogiri::HTML(open(page_url, &:read).toutf8)
 				end
 				sleep(1)
+=end
 
 
 

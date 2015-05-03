@@ -22,6 +22,7 @@ class Crawls::Try
     puts "***** 4 *****\n***** Success! *****\n***** Your Rails Runner and Your Job Script did! *****"
     self.try
     # challenge => Exception
+    # self.challenge => Exception
 	end
 
 	def self.try

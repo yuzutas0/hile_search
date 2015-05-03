@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150430085615) do
+ActiveRecord::Schema.define(version: 20150503072523) do
 
   create_table "bag_items", force: true do |t|
     t.string   "name",       null: false
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20150430085615) do
     t.integer  "price",      null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "image_url"
   end
 
   add_index "bag_items", ["depth"], name: "index_bag_items_on_depth"
