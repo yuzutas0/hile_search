@@ -8,14 +8,10 @@ class Crawls::GetDeviceWindows
 	require 'kconv'
 	require 'nokogiri'
 
-
-
 	# TOP
 	top_doc_original = open("http://kakaku.com/pc/note-pc/", &:read).toutf8
 	top_doc_original.gsub!(/<span>.+?<\/span>/, "")
 	top_doc = Nokogiri::HTML(top_doc_original)
-
-
 
 	#  MainMenu => HiddenMenu => End
 	item_number = 0
@@ -23,6 +19,8 @@ class Crawls::GetDeviceWindows
 	item_is_hidden = false
 
 	until item_is_end
+
+		devices = []
 
 		item_number += 1
 		subseriesmenu_path = "//*[@id=\"subseriesmenu\"]/div/div/"
@@ -44,11 +42,14 @@ class Crawls::GetDeviceWindows
 		subseriesmenu_name = subseriesmenu_name.text
 
 		menu_list = DeviceBrand.new(:name => subseriesmenu_name)
-		#menu_list.tap(&:save)
-		puts "[before]name: "       + menu_list.name
-		puts "[before]tree_depth: " + menu_list.tree_depth.to_s
-		puts "[before]leaf_flag: "  + menu_list.leaf_flag.to_s
-		puts "[before]parent_id: "  + menu_list.parent_id.to_s
+		menu_list.tap(&:save)
+
+		puts "* save *"
+		puts "   item_number: "        + item_number.to_s
+		puts "   [before]name: "       + menu_list.name
+		puts "   [before]tree_depth: " + menu_list.tree_depth.to_s
+		puts "   [before]leaf_flag: "  + menu_list.leaf_flag.to_s
+		puts "   [before]parent_id: "  + menu_list.parent_id.to_s
 
 
 
@@ -80,17 +81,19 @@ class Crawls::GetDeviceWindows
 
 			sub_menu_list = DeviceBrand.new(:name => sub_subseriesmenu_name,
 																			:tree_depth => 1,
-																			:parent_id => 2)
-#																			:parent_id => menu_list.id)
-			#sub_menu_list.tap(&:save)
-			puts "   name: "       + sub_menu_list.name
-			puts "      tree_depth: " + sub_menu_list.tree_depth.to_s
-			puts "      leaf_flag: "  + sub_menu_list.leaf_flag.to_s
-			puts "      parent_id: "  + sub_menu_list.parent_id.to_s
+																			:parent_id => menu_list.id)
+			sub_menu_list.tap(&:save)
+
+			puts "* save *"
+			puts "   sub_item_number: " + sub_item_number.to_s
+			puts "   name: "            + sub_menu_list.name
+			puts "   tree_depth: "      + sub_menu_list.tree_depth.to_s
+			puts "   leaf_flag: "       + sub_menu_list.leaf_flag.to_s
+			puts "   parent_id: "       + sub_menu_list.parent_id.to_s
 
 			if sub_item_number == 1
 				menu_list.leaf_flag = false
-				#menu_list.tap(&:save)
+				menu_list.tap(&:save)
 			end
 
 
@@ -108,7 +111,7 @@ class Crawls::GetDeviceWindows
 
 
 
-
+				# SubMenu (not MainMenu nor HiddenMenu)
 				# note-PC's link
 				link_number = 0
 				link_is_end = false
@@ -127,46 +130,145 @@ class Crawls::GetDeviceWindows
 
 
 					# note-PC's detail
-					# link_uriが"/"で終わっていなかったら、というかリンクの形式じゃなかったら処理
-					# link_uri + "spec/#tab"
-					# sleep(2)
-					# //*[@id="mainLeft"]/table/tbody/tr[23]/td[1]
-					#️ 各パラメータに入れる
-					# Modelを配列に入れておいてバルクインサート
+					link_uri += "spec/#tab"
+					detail_doc = Nokogiri::HTML(open(link_uri, &:read).toutf8)
+					sleep(2)
+
+					detail_name = detail_doc.at("//*[@id=\"titleBox\"]/div[1]/h2").text
+					detail_size = detail_doc.at("//*[@id=\"mainLeft\"]/table/tr[23]/td[1]").text
+					detail_width = detail_size.to_s.match(/\d+/)[0].to_i
+					detail_height = detail_size.to_s.match(/x/).post_match.match(/\d+/)[0].to_i
+					detail_depth = detail_size.to_s.match(/x/).post_match.match(/x/).post_match.match(/\d+/)[0].to_i
+
+					detail_unit = detail_size.to_s.match(/mm|cm/)[0]
+					if detail_unit == "mm"
+						detail_width = detail_width / 10
+						detail_height = detail_height / 10
+						detail_depth = detail_depth / 10
+					end
+
+					detail_obj = DeviceItem.new(:name => detail_name,
+																			:width => detail_width + 1,
+																			:height => detail_height + 1,
+																			:depth => detail_depth + 1,
+	 																		:device_brand_id => sub_menu_list.id)
+					devices.push(detail_obj)
+
+					puts "* add array *"
+					puts "   link_number: "     + link_number.to_s
+					puts "   link_count + 1: "  + (link_count + 1).to_s
+					puts "   name: "            + detail_obj.name
+					puts "   width: "           + detail_obj.width.to_s
+					puts "   height: "          + detail_obj.height.to_s
+					puts "   depth: "           + detail_obj.depth.to_s					
+					puts "   device_brand_id: " + detail_obj.device_brand_id.to_s
 
 
 
 					link_count += 1
 					link_is_end = true if link_count >= link_max
-
 				end
-
-
 
 				page_next = page_doc.at("//*[@id=\"itemList\"]/form/div[1]/table/tr/td[1]/p[2]/a/img").attribute('class')
 				page_is_end = true unless page_next == "pageNextOn"
+			end
+		end
 
+
+		# MainMenu or HiddenMenu (not SubMenu)
+		# note-PC's index
+		page_number = 0
+		page_is_end = false
+
+		until page_is_end
+			
+			page_number += 1
+			page_url = subseriesmenu_href + "&pdf_pg=" + page_number.to_s
+			page_doc = Nokogiri::HTML(open(page_url, &:read).toutf8)
+			sleep(2)
+
+
+
+			# note-PC's link
+			link_number = 0
+			link_is_end = false
+			link_count = 0
+			link_max = link_path.at("//*[@id=\"itemList\"]/form/div[1]/table/tr/td[1]/p[2]/span[2]").text.to_i
+
+			until link_is_end
+
+				link_number += 1
+				link_path = "//*[@id=\"compTblList\"]/tbody/tr[" + link_number.to_s + "]/td[2]/table/tr/td[1]/a"
+				link_point = link_path.at(link_path)
+
+				next if link_point.blank?
+				link_uri = link_point.attribute('href')
+
+
+
+				# note-PC's detail
+				link_uri += "spec/#tab"
+				detail_doc = Nokogiri::HTML(open(link_uri, &:read).toutf8)
+				sleep(2)
+
+				detail_name = detail_doc.at("//*[@id=\"titleBox\"]/div[1]/h2").text
+				for device in devices do
+					if device.name == detail_name
+						puts "* skip - same device! *"
+						next
+					end
+				end
+
+				detail_size = detail_doc.at("//*[@id=\"mainLeft\"]/table/tr[23]/td[1]").text
+				detail_width = detail_size.to_s.match(/\d+/)[0].to_i
+				detail_height = detail_size.to_s.match(/x/).post_match.match(/\d+/)[0].to_i
+				detail_depth = detail_size.to_s.match(/x/).post_match.match(/x/).post_match.match(/\d+/)[0].to_i
+
+				detail_unit = detail_size.to_s.match(/mm|cm/)[0]
+				if detail_unit == "mm"
+					detail_width = detail_width / 10
+					detail_height = detail_height / 10
+					detail_depth = detail_depth / 10
+				end
+
+				detail_obj = DeviceItem.new(:name => detail_name,
+																		:width => detail_width + 1,
+																		:height => detail_height + 1,
+																		:depth => detail_depth + 1,
+ 																		:device_brand_id => menu_list.id)
+				devices.push(detail_obj)
+
+				puts "* add array *"
+				puts "   link_number: "     + link_number.to_s
+				puts "   link_count + 1: "  + (link_count + 1).to_s
+				puts "   name: "            + detail_obj.name
+				puts "   width: "           + detail_obj.width.to_s
+				puts "   height: "          + detail_obj.height.to_s
+				puts "   depth: "           + detail_obj.depth.to_s					
+				puts "   device_brand_id: " + detail_obj.device_brand_id.to_s
+
+
+
+				link_count += 1
+				link_is_end = true if link_count >= link_max
 			end
 
-			# PCのインサート
-
+			page_next = page_doc.at("//*[@id=\"itemList\"]/form/div[1]/table/tr/td[1]/p[2]/a/img").attribute('class')
+			page_is_end = true unless page_next == "pageNextOn"
 		end
 
 
 
-		# 一覧に入る(ページングあるなら2つ目も含む)
-		# PC詳細のスペックページに入る
-		# サブメニューでは扱っていなかったPCをインサート
-		puts "[after]name: "       + menu_list.name
-		puts "[after]tree_depth: " + menu_list.tree_depth.to_s
-		puts "[after]leaf_flag: "  + menu_list.leaf_flag.to_s
-		puts "[after]parent_id: "  + menu_list.parent_id.to_s
-		puts "*****"
+		# Bulk Insert
+		DeviceItem.import devices
 
-
+		puts "* save PC list *"
+		puts "   item_number: "       + item_number.to_s
+		puts "   [after]name: "       + menu_list.name
+		puts "   [after]tree_depth: " + menu_list.tree_depth.to_s
+		puts "   [after]leaf_flag: "  + menu_list.leaf_flag.to_s
+		puts "   [after]parent_id: "  + menu_list.parent_id.to_s
+		puts "********** ********** **********"
 
 	end
-
-
-
 end
