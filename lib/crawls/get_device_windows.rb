@@ -259,7 +259,7 @@ class Crawls::GetDeviceWindows
 
 
 
-		# Bulk Insert
+		# Bulk Insert by gem 'activerecord-import'
 		DeviceItem.import devices
 
 		puts "* save PC list *"
