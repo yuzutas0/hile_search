@@ -12,6 +12,7 @@ class Crawls::GetDeviceWindows
 	top_doc_original = open("http://kakaku.com/pc/note-pc/", &:read).toutf8
 	top_doc_original.gsub!(/<span>.+?<\/span>/, "")
 	top_doc = Nokogiri::HTML(top_doc_original)
+	sleep(1)
 
 	#  MainMenu => HiddenMenu => End
 	item_number = 0
@@ -20,11 +21,12 @@ class Crawls::GetDeviceWindows
 
 	until item_is_end
 
+		puts "- until item_is_end -" + Time.now.to_s 
 		devices = []
 
 		item_number += 1
 		subseriesmenu_path = "//*[@id=\"subseriesmenu\"]/div/div/"
-		subseriesmenu_path += "div[1]/" if item_is_hidden == 1
+		subseriesmenu_path += "div[1]/" if item_is_hidden == true
 		subseriesmenu_path += ("ul/li[" + item_number.to_s + "]/a")
 		subseriesmenu_name = top_doc.at(subseriesmenu_path)
 		
@@ -59,9 +61,11 @@ class Crawls::GetDeviceWindows
 
 		until sub_item_is_end
 
+			puts "- until sub_item_is_end -" + Time.now.to_s 
 			sub_item_number += 1
+
 			sub_subseriesmenu_path = "//*[@id=\"subseriesmenu\"]/div/div/"
-			sub_subseriesmenu_path += "div[1]/" if item_is_hidden == 1
+			sub_subseriesmenu_path += "div[1]/" if item_is_hidden == true
 			sub_subseriesmenu_path += ("ul/li[" + item_number.to_s + "]/div/ul/li[" + sub_item_number.to_s + "]/a")
 			sub_subseriesmenu_name = top_doc.at(sub_subseriesmenu_path)
 
@@ -104,10 +108,18 @@ class Crawls::GetDeviceWindows
 
 			until page_is_end
 				
+				puts "- until page_is_end -" + Time.now.to_s 
 				page_number += 1
-				page_url = sub_subseriesmenu_href + "&pdf_pg=" + page_number.to_s
-				page_doc = Nokogiri::HTML(open(page_url, &:read).toutf8)
-				sleep(2)
+
+				page_url = sub_subseriesmenu_href.to_s + "&pdf_pg=" + page_number.to_s
+				begin
+					page_doc = Nokogiri::HTML(open(page_url, &:read).toutf8)
+				rescue Exception => e
+					puts "********** page_url: " + page_url
+					logger.error "error-message:" + e.message
+					page_doc = Nokogiri::HTML(open(page_url, &:read).toutf8)
+				end
+				sleep(1)
 
 
 
@@ -116,26 +128,46 @@ class Crawls::GetDeviceWindows
 				link_number = 0
 				link_is_end = false
 				link_count = 0
-				link_max = link_path.at("//*[@id=\"itemList\"]/form/div[1]/table/tr/td[1]/p[2]/span[2]").text.to_i
+				link_max = page_doc.at("//*[@id=\"itemList\"]/form/div[1]/table/tr/td[1]/p[2]/span[2]").text.to_i
 
 				until link_is_end
 
+					puts "- until link_is_end -" + Time.now.to_s 
+					if link_count >= link_max
+						link_is_end = true 
+						next
+					end
+
 					link_number += 1
 					link_path = "//*[@id=\"compTblList\"]/tbody/tr[" + link_number.to_s + "]/td[2]/table/tr/td[1]/a"
-					link_point = link_path.at(link_path)
+					link_point = page_doc.at(link_path)
 
 					next if link_point.blank?
-					link_uri = link_point.attribute('href')
+					link_count += 1
+					link_uri = link_point.attribute('href').to_s
 
 
 
 					# note-PC's detail
 					link_uri += "spec/#tab"
 					detail_doc = Nokogiri::HTML(open(link_uri, &:read).toutf8)
-					sleep(2)
+					sleep(1)
 
-					detail_name = detail_doc.at("//*[@id=\"titleBox\"]/div[1]/h2").text
+					detail_name = detail_doc.at("//*[@id=\"titleBox\"]/div[1]/h2").text					
+					kakakucom_check = detail_name.match(/価格.com/)
+					unless kakakucom_check.blank?
+						puts "* skip - kakakucom! *"
+						next
+					end
+					package_check = detail_name.match(/パッケージ/)
+					unless package_check.blank?
+						puts "* skip - package! *"
+						next
+					end
+
 					detail_size = detail_doc.at("//*[@id=\"mainLeft\"]/table/tr[23]/td[1]").text
+					next if detail_size.blank?
+
 					detail_width = detail_size.to_s.match(/\d+/)[0].to_i
 					detail_height = detail_size.to_s.match(/x/).post_match.match(/\d+/)[0].to_i
 					detail_depth = detail_size.to_s.match(/x/).post_match.match(/x/).post_match.match(/\d+/)[0].to_i
@@ -156,21 +188,21 @@ class Crawls::GetDeviceWindows
 
 					puts "* add array *"
 					puts "   link_number: "     + link_number.to_s
-					puts "   link_count + 1: "  + (link_count + 1).to_s
+					puts "   link_count: "      + link_count.to_s
 					puts "   name: "            + detail_obj.name
 					puts "   width: "           + detail_obj.width.to_s
 					puts "   height: "          + detail_obj.height.to_s
 					puts "   depth: "           + detail_obj.depth.to_s					
 					puts "   device_brand_id: " + detail_obj.device_brand_id.to_s
-
-
-
-					link_count += 1
-					link_is_end = true if link_count >= link_max
 				end
 
-				page_next = page_doc.at("//*[@id=\"itemList\"]/form/div[1]/table/tr/td[1]/p[2]/a/img").attribute('class')
-				page_is_end = true unless page_next == "pageNextOn"
+				page_next = page_doc.at("//*[@id=\"itemList\"]/form/div[1]/table/tr/td[1]/p[2]/a/img")
+				if page_next == nil
+					page_is_end = true
+				else
+					page_next = page_next.attribute('class')
+					page_is_end = true unless page_next == "pageNextOn"
+				end
 			end
 		end
 
@@ -182,10 +214,12 @@ class Crawls::GetDeviceWindows
 
 		until page_is_end
 			
+			puts "- until page_is_end -" + Time.now.to_s 
 			page_number += 1
-			page_url = subseriesmenu_href + "&pdf_pg=" + page_number.to_s
+
+			page_url = subseriesmenu_href.to_s + "&pdf_pg=" + page_number.to_s
 			page_doc = Nokogiri::HTML(open(page_url, &:read).toutf8)
-			sleep(2)
+			sleep(1)
 
 
 
@@ -193,33 +227,56 @@ class Crawls::GetDeviceWindows
 			link_number = 0
 			link_is_end = false
 			link_count = 0
-			link_max = link_path.at("//*[@id=\"itemList\"]/form/div[1]/table/tr/td[1]/p[2]/span[2]").text.to_i
+			link_max = page_doc.at("//*[@id=\"itemList\"]/form/div[1]/table/tr/td[1]/p[2]/span[2]").text.to_i
 
 			until link_is_end
 
+				puts "- until link_is_end -" + Time.now.to_s 
+				if link_count >= link_max
+					link_is_end = true 
+					next
+				end
+
 				link_number += 1
 				link_path = "//*[@id=\"compTblList\"]/tbody/tr[" + link_number.to_s + "]/td[2]/table/tr/td[1]/a"
-				link_point = link_path.at(link_path)
+				link_point = page_doc.at(link_path)
 
 				next if link_point.blank?
-				link_uri = link_point.attribute('href')
+				link_count += 1
+				link_uri = link_point.attribute('href').to_s
 
 
 
 				# note-PC's detail
 				link_uri += "spec/#tab"
 				detail_doc = Nokogiri::HTML(open(link_uri, &:read).toutf8)
-				sleep(2)
+				sleep(1)
 
 				detail_name = detail_doc.at("//*[@id=\"titleBox\"]/div[1]/h2").text
-				for device in devices do
-					if device.name == detail_name
-						puts "* skip - same device! *"
-						next
-					end
+				kakakucom_check = detail_name.match(/価格.com/)
+				unless kakakucom_check.blank?
+					puts "* skip - kakakucom! *"
+					next
+				end
+				package_check = detail_name.match(/パッケージ/)
+				unless package_check.blank?
+					puts "* skip - package! *"
+					next
 				end
 
+				is_same_device = false
+				for device in devices do
+					if device.name == detail_name
+						is_same_device = true
+						puts "* skip - same device! *"
+						break
+					end
+				end
+				next if is_same_device					
+
 				detail_size = detail_doc.at("//*[@id=\"mainLeft\"]/table/tr[23]/td[1]").text
+				next if detail_size.blank?
+
 				detail_width = detail_size.to_s.match(/\d+/)[0].to_i
 				detail_height = detail_size.to_s.match(/x/).post_match.match(/\d+/)[0].to_i
 				detail_depth = detail_size.to_s.match(/x/).post_match.match(/x/).post_match.match(/\d+/)[0].to_i
@@ -246,15 +303,15 @@ class Crawls::GetDeviceWindows
 				puts "   height: "          + detail_obj.height.to_s
 				puts "   depth: "           + detail_obj.depth.to_s					
 				puts "   device_brand_id: " + detail_obj.device_brand_id.to_s
-
-
-
-				link_count += 1
-				link_is_end = true if link_count >= link_max
 			end
 
-			page_next = page_doc.at("//*[@id=\"itemList\"]/form/div[1]/table/tr/td[1]/p[2]/a/img").attribute('class')
-			page_is_end = true unless page_next == "pageNextOn"
+			page_next = page_doc.at("//*[@id=\"itemList\"]/form/div[1]/table/tr/td[1]/p[2]/a/img")
+			if page_next == nil
+				page_is_end = true
+			else
+				page_next = page_next.attribute('class')
+				page_is_end = true unless page_next == "pageNextOn"
+			end
 		end
 
 

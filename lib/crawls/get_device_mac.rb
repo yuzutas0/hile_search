@@ -50,7 +50,7 @@ class Crawls::GetDeviceMac
 	mac_book_pro_height = mac_book_pro_size_doc.to_s.match(/高/).post_match.match(/\d+/)[0]
 	mac_book_pro_depth = mac_book_pro_size_doc.to_s.match(/奥/).post_match.match(/\d+/)[0]
 
-	mac_book_pro = DeviceItem.new(:name => mac_book_pro_name,
+	mac_book_pro = DeviceItem.new(:name => mac_book_pro_name.to_s,
 														:width => mac_book_pro_width.to_i + 1,
 														:height => mac_book_pro_height.to_i + 1,
 														:depth => mac_book_pro_depth.to_i + 1,
@@ -83,7 +83,7 @@ class Crawls::GetDeviceMac
 		mac_book_pro_retina_height = mac_book_pro_retina_size_doc.to_s.match(/高/).post_match.match(/\d+/)[0]
 		mac_book_pro_retina_depth = mac_book_pro_retina_size_doc.to_s.match(/奥/).post_match.match(/\d+/)[0]
 
-		mac_book_pro_retina = DeviceItem.new(:name => mac_book_pro_retina_name,
+		mac_book_pro_retina = DeviceItem.new(:name => mac_book_pro_retina_name.to_s,
 															:width => mac_book_pro_retina_width.to_i + 1,
 															:height => mac_book_pro_retina_height.to_i + 1,
 															:depth => mac_book_pro_retina_depth.to_i + 1,
@@ -109,12 +109,12 @@ class Crawls::GetDeviceMac
 		mac_book_air_size_path = "//*[@id=\"main\"]/table/tr[8]/td[" + num.to_s + "]"
 		mac_book_air_size_doc = mac_book_air_doc.at(mac_book_air_size_path)
 
-		mac_book_air_name = mac_book_air_doc.at(mac_book_air_name_path)
+		mac_book_air_name = mac_book_air_doc.at(mac_book_air_name_path).text
 		mac_book_air_width = mac_book_air_size_doc.to_s.match(/幅/).post_match.match(/\d+/)[0]
 		mac_book_air_height = mac_book_air_size_doc.to_s.match(/高/).post_match.match(/～\d+/)[0].to_s[1..-1]
 		mac_book_air_depth = mac_book_air_size_doc.to_s.match(/奥/).post_match.match(/\d+/)[0]
 
-		mac_book_air = DeviceItem.new(:name => mac_book_air_name,
+		mac_book_air = DeviceItem.new(:name => mac_book_air_name.to_s,
 															:width => mac_book_air_width.to_i + 1,
 															:height => mac_book_air_height.to_i + 1,
 															:depth => mac_book_air_depth.to_i + 1,
