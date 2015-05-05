@@ -6,10 +6,64 @@ class Crawls::GetBagDetail
 	require 'nokogiri'
 
 	# rails runner Crawls::GetBagDetail.execute
+	# for auto crawling
 	def self.execute
-		# input => detail-manager
-		# output => save
-		# CrawlBagDetailManager
+		rest = CrawlBagDetailManager.where(done_flag: false, error_flag: false).count
+		if rest == 0
+			puts "*** everything done ***"
+			return
+		end
+
+		for now_number in [0..rest]
+			self.execute_single
+			puts "finish ===> " + now_number.to_s + "/" + rest.to_s
+
+			all = CrawlBagDetailManager.count
+			rest = CrawlBagDetailManager.where(done_flag: false, error_flag: false).count
+			done = CrawlBagDetailManager.where(done_flag: true).count
+			error = CrawlBagDetailManager.where(error_flag: true).count
+			puts = "DB-rest ===> " + rest.to_s + "/" + all.to_s
+			puts = "DB-done ===> " + done.to_s + "/" + all.to_s
+			puts = "DB-error ===> " + error.to_s + "/" + all.to_s
+		end
+
+		puts "*** for-loop-end ***"
+	end
+
+
+
+	# rails runner Crawls::GetBagDetail.execute_single
+	# for check test
+	def self.execute_single
+		manager = CrawlBagDetailManager.find_by(done_flag: false, error_flag: false)
+		if manager == nil
+			puts "*** everything done ***"
+			return
+		end
+
+		error_sequence = 0
+		while_sequence = 0
+		
+		while !manager.done_flag && !manager.error_flag
+			begin
+				puts " crawl!"
+				self.detail_to_array(manager)
+				error_sequence = 0
+			rescue
+				puts "  error!"
+				error_sequence += 1
+				if error_sequence >= 20
+					puts "*** 20 sequence error ***"
+					return
+				end
+			end
+
+			while_sequence += 1
+			if while_sequence >= 50
+				puts "*** 50 sequence while ***"
+				return
+			end
+		end
 	end
 
 
@@ -19,7 +73,8 @@ class Crawls::GetBagDetail
 		# same check
 		detail_url_dp = manager.url.match(/\/dp\//).post_match
 		if self.check_same_dp_url(detail_url_dp, manager.bag_tag)
-			manager.done_flag = true
+			manager.update_attribute(:done_flag, true)
+			puts "tag-association update!"
 			return
 		end
 
@@ -40,7 +95,8 @@ class Crawls::GetBagDetail
 
 		# error check
 		if detail_name == nil || detail_image == nil || detail_price == 0 || detail_width == 0 || detail_height == 0
-			manager.error_flag = true
+			manager.update_attribute(:error_flag, true)
+			puts "get_info mistake!"
 			return
 		end
 
@@ -58,8 +114,13 @@ class Crawls::GetBagDetail
 															:price     => detail_price,
 															:image_url => detail_image)
 		detail_item.bag_tag << manager.bag_tag
-		detail_item.save
+		detail_item.tap(&:save)
+		puts "update => " + detail_item.name 
+		puts " - width:" + detail_item.width.to_s
+		puts " - height:" + detail_item.height.to_s
+
 		manager.done_flag = true
+		manager.save
 		return
 	end
 
