@@ -66,6 +66,7 @@ class Crawls::GetBagPage
 		# is end_of_paging?
 		next_page = this_page.at("//*[@id=\"pagnNextLink\"]")
 		manager.done_flag = true if next_page.blank?
+		manager.done_flag = true if manager.progress_page > 10
 		manager.save
 	end
 
