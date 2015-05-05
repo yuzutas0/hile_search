@@ -14,7 +14,7 @@ class Crawls::GetBagDetail
 			return
 		end
 
-		for now_number in [0..rest]
+		for now_number in 0..rest do
 			self.execute_single
 			puts "finish ===> " + now_number.to_s + "/" + rest.to_s
 
@@ -28,6 +28,16 @@ class Crawls::GetBagDetail
 		end
 
 		puts "*** for-loop-end ***"
+	end
+
+
+
+	# rails runner Crawls::GetBagDetail.execute_ten
+	def self.execute_ten
+		for now_number in 1..10 do
+			self.execute_single
+			puts "finish ===> " + now_number.to_s + "/10"
+		end
 	end
 
 
@@ -52,8 +62,9 @@ class Crawls::GetBagDetail
 			rescue
 				puts "  error!"
 				error_sequence += 1
-				if error_sequence >= 20
-					puts "*** 20 sequence error ***"
+				if error_sequence >= 30
+					puts "*** 30 sequence error ***"
+					puts manager.url
 					return
 				end
 			end
@@ -79,8 +90,9 @@ class Crawls::GetBagDetail
 		end
 
 		# crawl
+		this_url = manager.url
 		sleep(1)
-		this_detail = Nokogiri::HTML(open(manager.url, &:read).toutf8)
+		this_detail = Nokogiri::HTML(open(this_url, &:read).toutf8)
 
 		# get basic parameters
 		detail_name = self.get_name(this_detail)
@@ -95,8 +107,14 @@ class Crawls::GetBagDetail
 
 		# error check
 		if detail_name == nil || detail_image == nil || detail_price == 0 || detail_width == 0 || detail_height == 0
+			puts "e"
 			manager.update_attribute(:error_flag, true)
-			puts "get_info mistake!"
+			puts "get_name mistake!" if detail_name == nil
+			puts "get_name mistake!" if detail_image == nil
+			puts "get_name mistake!" if detail_price == 0
+			puts "get_name mistake!" if detail_width == 0
+			puts "get_name mistake!" if detail_height == 0
+			puts "url ===> " + this_url
 			return
 		end
 
@@ -113,11 +131,16 @@ class Crawls::GetBagDetail
 															:depth     => detail_depth,
 															:price     => detail_price,
 															:image_url => detail_image)
-		detail_item.bag_tag << manager.bag_tag
+		detail_item.bag_tags.push(manager.bag_tag)
 		detail_item.tap(&:save)
-		puts "update => " + detail_item.name 
+
+		puts "save => " + detail_item.name
+		puts " - url_dp:" + detail_item.url_dp
 		puts " - width:" + detail_item.width.to_s
 		puts " - height:" + detail_item.height.to_s
+		puts " - depth:" + detail_item.depth.to_s
+		puts " - price:" + detail_item.price.to_s
+		puts " - image:" + detail_item.image_url
 
 		manager.done_flag = true
 		manager.save
@@ -158,7 +181,7 @@ class Crawls::GetBagDetail
 		detail_image = detail_image.attribute("src")
 		return nil if detail_image == nil
 		return nil if detail_image.to_s.blank?
-		return detail_image
+		return detail_image.to_s
 	end
 
 
@@ -179,6 +202,7 @@ class Crawls::GetBagDetail
 
 	def self.get_size(this_detail)
 		detail_size_doc = this_detail.at("//*[@id=\"feature-bullets\"]/ul")
+		detail_size_doc = this_detail.at("//*[@id=\"productDescription\"]/div/div") if detail_size_doc == nil
 		if detail_size_doc == nil || detail_size_doc.to_s.blank?
 			return { "width" => 0, "height" => 0, "depth" => 0 }
 		end
@@ -190,7 +214,7 @@ class Crawls::GetBagDetail
 
 		# get_size_score
 		detail_width = self.get_size_score(["横", "ヨコ", "長", "幅", "Ｗ", "W"], detail_size_doc)
-		detail_height = self.get_size_score(["縦", "タテ", "高", "厚", "Ｈ", "H"], detail_size_doc)
+		detail_height = self.get_size_score(["縦", "タテ", "高", "厚", "マチ", "Ｈ", "H"], detail_size_doc)
 		detail_depth = self.get_size_score(["奥", "マチ", "マッチ", "幅", "厚","Ｄ", "D"], detail_size_doc)
 
 		# get_size_score in other case
@@ -200,6 +224,7 @@ class Crawls::GetBagDetail
 			detail_height = slice_size_hash["height"]
 			detail_depth = slice_size_hash["depth"]
 		end
+
 		return { "width" => detail_width, "height" => detail_height, "depth" => detail_depth}
 	end
 
