@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  url: MyText
+  tag_id: 1
+  done_flag: false
+  error_flag: false
+
+two:
+  url: MyText
+  tag_id: 1
+  done_flag: false
+  error_flag: false
