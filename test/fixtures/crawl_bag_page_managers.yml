@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  bag_tag_id: 1
+  url: MyText
+  progress_page: 1
+  done_flag: false
+
+two:
+  bag_tag_id: 1
+  url: MyText
+  progress_page: 1
+  done_flag: false
