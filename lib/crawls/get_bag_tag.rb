@@ -1,15 +1,9 @@
 # encoding: utf-8
 class Crawls::GetBagTag
-	# rails runner Crawls::GetBagTag
-
-
-
-	url_common_before = "http://www.amazon.co.jp/s/?rh=n%3A2016926051%2Cn%3A"
-	url_common_after = "&page=" # + "1", "2", ...
-
-
-
+	
+	# rails runner Crawls::GetBagTag.execute
 	def self.execute
+
 		mens_bag_name = "メンズバッグ"
 		mens_bag_url_list = {
 			"セカンドバッグ" => "%212016927051%2Cn%3A2221077051%2Cn%3A2221074051%2Cn%3A2221205051%2Cn%3A2221211051",
@@ -19,7 +13,7 @@ class Crawls::GetBagTag
 			"メッセンジャーバッグ" => "%212016927051%2Cn%3A2221077051%2Cn%3A2032443051"
 		}
 		self.import_bag_tag(mens_bag_name, mens_bag_url_list)
-
+		self.import_crawl_manager(mens_bag_url_list)
 
 
 		ladies_bag_name = "レディースバッグ"	
@@ -34,8 +28,8 @@ class Crawls::GetBagTag
 			"カゴバッグ" => "%212016927051%2Cn%3A2221077051%2Cn%3A2221075051%2Cn%3A2221178051%2Cn%3A2221197051"
 		}
 		self.import_bag_tag(ladies_bag_name, ladies_bag_url_list)
+		self.import_crawl_manager(ladies_bag_url_list)
 		
-
 
 		ruck_bag_name = "リュック・バックパック"
 		ruck_bag_url_list = {
@@ -47,9 +41,9 @@ class Crawls::GetBagTag
 			"アウトドアバッグ" => "%212016927051%2Cn%3A2221077051%2Cn%3A15324701"
 		}
 		self.import_bag_tag(ruck_bag_name, ruck_bag_url_list)
+		self.import_crawl_manager(ruck_bag_url_list)
 
 
-		
 		business_bag_name = "ビジネスバッグ"
 		business_bag_url_list = {
 			"ＰＣ収納" => "2221077051%2Cn%3A2226779051%2Ck%3A%EF%BC%B0%EF%BC%A3%E5%8F%8E%E7%B4%8D",
@@ -66,12 +60,13 @@ class Crawls::GetBagTag
 			"バッグインバッグ" => "2221077051%2Cn%3A2226779051%2Ck%3A%E3%83%90%E3%83%83%E3%82%B0%E3%82%A4%E3%83%B3%E3%83%90%E3%83%83%E3%82%B0"
 		}
 		self.import_bag_tag(business_bag_name, business_bag_url_list)
+		self.import_crawl_manager(business_bag_url_list)
 	end
-
 
 
 	# => MainDB
 	def self.import_bag_tag(this_name, this_list)
+
 		this_bag = BagTag.new(:name => this_name)
 		this_bag.tap(&:save)
 
@@ -81,16 +76,25 @@ class Crawls::GetBagTag
 																	:tree_depth => 1,
 																	:parent_id => this_bag.id)
 		}
+
 		BagTag.import this_bag_list
 	end
 
 
-
 	# => SupportDB
-	
+	def self.import_crawl_manager(this_list)
+		
+		url_common_before = "http://www.amazon.co.jp/s/?rh=n%3A2016926051%2Cn%3A"
+		url_common_after = "&page=" # + "1", "2", ...
 
+		this_manager_list = []
+		this_list.each { |key, value|
+			bag_tag = BagTag.find_by(name: key)
+			this_url = url_common_before + value + url_common_after
+			this_manager = CrawlBagPageManager.new(:bag_tag_id => bag_tag.id, :url => this_url)
+			this_manager_list << this_manager
+		}
 
-
-	# MainDB.tags(tree_depth = 1).name => URL => SupportDB
-
+		CrawlBagPageManager.import this_manager_list
+	end
 end
