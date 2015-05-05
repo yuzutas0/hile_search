@@ -13,7 +13,7 @@ class Crawls::GetBagTag
 			"メッセンジャーバッグ" => "%212016927051%2Cn%3A2221077051%2Cn%3A2032443051"
 		}
 		self.import_bag_tag(mens_bag_name, mens_bag_url_list)
-		self.import_crawl_manager(mens_bag_url_list)
+		self.import_crawl_manager(mens_bag_name, mens_bag_url_list)
 
 
 		ladies_bag_name = "レディースバッグ"	
@@ -28,7 +28,7 @@ class Crawls::GetBagTag
 			"カゴバッグ" => "%212016927051%2Cn%3A2221077051%2Cn%3A2221075051%2Cn%3A2221178051%2Cn%3A2221197051"
 		}
 		self.import_bag_tag(ladies_bag_name, ladies_bag_url_list)
-		self.import_crawl_manager(ladies_bag_url_list)
+		self.import_crawl_manager(ladies_bag_name, ladies_bag_url_list)
 		
 
 		ruck_bag_name = "リュック・バックパック"
@@ -41,7 +41,7 @@ class Crawls::GetBagTag
 			"アウトドアバッグ" => "%212016927051%2Cn%3A2221077051%2Cn%3A15324701"
 		}
 		self.import_bag_tag(ruck_bag_name, ruck_bag_url_list)
-		self.import_crawl_manager(ruck_bag_url_list)
+		self.import_crawl_manager(ruck_bag_name, ruck_bag_url_list)
 
 
 		business_bag_name = "ビジネスバッグ"
@@ -60,7 +60,7 @@ class Crawls::GetBagTag
 			"バッグインバッグ" => "2221077051%2Cn%3A2226779051%2Ck%3A%E3%83%90%E3%83%83%E3%82%B0%E3%82%A4%E3%83%B3%E3%83%90%E3%83%83%E3%82%B0"
 		}
 		self.import_bag_tag(business_bag_name, business_bag_url_list)
-		self.import_crawl_manager(business_bag_url_list)
+		self.import_crawl_manager(business_bag_name, business_bag_url_list)
 	end
 
 
@@ -82,14 +82,15 @@ class Crawls::GetBagTag
 
 
 	# => SupportDB
-	def self.import_crawl_manager(this_list)
+	def self.import_crawl_manager(this_name, this_list)
 		
 		url_common_before = "http://www.amazon.co.jp/s/?rh=n%3A2016926051%2Cn%3A"
 		url_common_after = "&page=" # + "1", "2", ...
 
 		this_manager_list = []
 		this_list.each { |key, value|
-			bag_tag = BagTag.find_by(name: key)
+			parent_tag = BagTag.find_by(name: this_name, tree_depth: 0)
+			bag_tag = BagTag.find_by(name: key, parent_id: parent_tag.id)
 			this_url = url_common_before + value + url_common_after
 			this_manager = CrawlBagPageManager.new(:bag_tag_id => bag_tag.id, :url => this_url)
 			this_manager_list << this_manager

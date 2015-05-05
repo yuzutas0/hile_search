@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150503072523) do
+ActiveRecord::Schema.define(version: 20150505034637) do
 
   create_table "bag_items", force: true do |t|
     t.string   "name",       null: false
@@ -45,6 +45,17 @@ ActiveRecord::Schema.define(version: 20150503072523) do
   end
 
   add_index "bag_tags", ["parent_id"], name: "index_bag_tags_on_parent_id"
+
+  create_table "crawl_bag_page_managers", force: true do |t|
+    t.integer  "bag_tag_id"
+    t.text     "url"
+    t.integer  "progress_page", default: 1,     null: false
+    t.boolean  "done_flag",     default: false, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "crawl_bag_page_managers", ["bag_tag_id"], name: "index_crawl_bag_page_managers_on_bag_tag_id"
 
   create_table "device_brands", force: true do |t|
     t.string   "name",                      null: false
