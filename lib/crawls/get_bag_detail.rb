@@ -17,6 +17,7 @@ class Crawls::GetBagDetail
 		this_detail = Nokogiri::HTML(open(detail_url, &:read).toutf8)
 		sleep(1)
 
+		# get parameters
 		detail_url_dp = self.get_url_dp(this_detail)
 		detail_name = self.get_name(this_detail)
 		detail_image = self.get_image(this_detail)
@@ -27,7 +28,10 @@ class Crawls::GetBagDetail
 		detail_height = size_hash["height"]
 		detail_depth = size_hash["depth"]
 
-		# error check?
+		# error check
+		# name, image => nil
+		# price, width, height => 0
+		# depth => 0 (error but save)
 
 		# object
 		detail_item = BagItem.new(:name      => detail_name,
@@ -52,7 +56,11 @@ class Crawls::GetBagDetail
 
 
 	def self.get_name(this_detail)
-		detail_name = this_detail.at("//*[@id=\"productTitle\"]").text
+		begin
+			detail_name = this_detail.at("//*[@id=\"productTitle\"]").text
+		rescue
+			return nil
+		end
 		detail_name.gsub!(" ", "")
 		detail_name.gsub!("　", "")
 		return detail_name
@@ -67,17 +75,18 @@ class Crawls::GetBagDetail
 		return nil if detail_image == nil
 		return nil if detail_image.to_s.blank?
 		return detail_image
-		# return nil => done, not save
 	end
 
 
 
-	# exception pattern => error, not done
 	def self.get_price(this_detail)
 		detail_price_text = this_detail.at("//*[@id=\"priceblock_ourprice\"]")
 		detail_price_text = this_detail.at("//*[@id=\"priceblock_saleprice\"]") if detail_price_text == nil
+		return 0 if detail_price_text == nil
 		detail_price_text = detail_price_text.text
-		[" ", "　", "¥", "￥", ",", "、"].each { |word|   detail_price_text.gsub!(word, "") }
+		[" ", "　", "¥", "￥", ",", "、"].each { |word|
+			detail_price_text.gsub!(word, "")
+		}
 		detail_price = detail_price_text.to_i
 		return detail_price
 	end
@@ -86,8 +95,9 @@ class Crawls::GetBagDetail
 
 	def self.get_size(this_detail)
 		detail_size_doc = this_detail.at("//*[@id=\"feature-bullets\"]/ul")
-		return if detail_size_doc == nil
-		return if detail_size_doc.to_s.blank?
+		if detail_size_doc == nil || detail_size_doc.to_s.blank?
+			return { "width" => 0, "height" => 0, "depth" => 0 }
+		end
 
 		# if they say "size", focus it
 		if detail_size_doc.to_s.match(/サイズ/) != nil
@@ -106,16 +116,6 @@ class Crawls::GetBagDetail
 			detail_height = slice_size_hash["height"]
 			detail_depth = slice_size_hash["depth"]
 		end
-
-		if detail_width == 0 || detail_height == 0
-			# error case
-		end
-
-		if detail_depth == 0
-			# error case
-			# but done
-		end
-
 		return { "width" => detail_width, "height" => detail_height, "depth" => detail_depth}
 	end
 
