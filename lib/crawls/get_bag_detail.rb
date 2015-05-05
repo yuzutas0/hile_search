@@ -100,34 +100,11 @@ class Crawls::GetBagDetail
 		detail_depth = self.get_size_score(["奥", "マチ", "マッチ", "幅", "厚","Ｄ", "D"], detail_size_doc)
 
 		# get_size_score in other case
-		if detail_width == detail_height && detail_width == detail_depth
-			if detail_width == 0
-				# size：19.5cm×11.5cm×4.3cm
-				slicers = ["x", "×"]
-				is_slice_pattern = self.is_slice_pattern(detail_size_doc, slicers)
-				if is_slice_pattern["result"] == "1" || is_slice_pattern["result"] == "2"
-					slicer = is_slice_pattern["slicer"]
-
-					if detail_size_doc.to_s.match(/#{slicer}/).pre_match.size > 10
-						detail_width_string = detail_size_doc.to_s.match(/#{slicer}/).pre_match.to_s[-10..-1].match(/[0-9０-９]+/)
-					else
-						detail_width_string = detail_size_doc.to_s.match(/#{slicer}/).pre_match.match(/[0-9０-９]+/)
-					end
-					detail_width = self.get_size_score_by_slicer(detail_width_string)
-
-					detail_height_string = detail_size_doc.to_s.match(/#{slicer}/).post_match.match(/[0-9０-９]+/)
-					detail_height = self.get_size_score_by_slicer(detail_height_string)
-					
-					if is_slice_pattern["result"] == "2"
-						detail_depth_string = detail_size_doc.to_s.match(/#{slicer}/).post_match.match(/#{slicer}/).post_match.match(/[0-9０-９]+/)
-						detail_depth = self.get_size_score_by_slicer(detail_depth_string)
-					end
-				end
-			end
-		end
-
-		if detail_width == detail_height && detail_width == detail_depth
-			# error case
+		if detail_width == detail_height && detail_width == detail_depth && detail_width == 0
+			slice_size_hash = self.get_size_when_slice_pattern(detail_size_doc)
+			detail_width = slice_size_hash["width"]
+			detail_height = slice_size_hash["height"]
+			detail_depth = slice_size_hash["depth"]
 		end
 
 		if detail_width == 0 || detail_height == 0
@@ -158,6 +135,39 @@ class Crawls::GetBagDetail
 			end
 		}
 		return result_integer
+	end
+
+
+
+	def self.get_size_when_slice_pattern(detail_size_doc)
+		detail_width = 0
+		detail_height = 0
+		detail_depth = 0
+
+		# size：19.5cm×11.5cm×4.3cm
+		slicers = ["x", "×"]
+		is_slice_pattern = self.is_slice_pattern(detail_size_doc, slicers)
+
+		if is_slice_pattern["result"] == "1" || is_slice_pattern["result"] == "2"
+			slicer = is_slice_pattern["slicer"]
+
+			if detail_size_doc.to_s.match(/#{slicer}/).pre_match.size > 10
+				detail_width_string = detail_size_doc.to_s.match(/#{slicer}/).pre_match.to_s[-10..-1].match(/[0-9０-９]+/)
+			else
+				detail_width_string = detail_size_doc.to_s.match(/#{slicer}/).pre_match.match(/[0-9０-９]+/)
+			end
+			detail_width = self.get_size_score_by_slicer(detail_width_string)
+
+			detail_height_string = detail_size_doc.to_s.match(/#{slicer}/).post_match.match(/[0-9０-９]+/)
+			detail_height = self.get_size_score_by_slicer(detail_height_string)
+			
+			if is_slice_pattern["result"] == "2"
+				detail_depth_string = detail_size_doc.to_s.match(/#{slicer}/).post_match.match(/#{slicer}/).post_match.match(/[0-9０-９]+/)
+				detail_depth = self.get_size_score_by_slicer(detail_depth_string)
+			end
+		end
+
+		return ["width" => detail_width, "height" => detail_height, "depth" => detail_depth]
 	end
 
 
