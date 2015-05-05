@@ -8,18 +8,24 @@ class Crawls::GetBagPage
 	# rails runner Crawls::GetBagPage.execute
 	def self.execute
 		error_sequence = 0
+		loop_sequence = 0
 
 		loop {
+			loop_sequence += 1
+			puts "loop: " + loop_sequence.to_s
+
 			manager = CrawlBagPageManager.find_by(done_flag: false)
 			break if manager == nil
 
 			begin
-				page_url = manager.url + manager.progress_page
+				puts " crawl!"
+				page_url = manager.url + manager.progress_page.to_s
+				sleep(2)
 				this_page = Nokogiri::HTML(open(page_url, &:read).toutf8)
-				sleep(1)
 				error_sequence = 0
 				self.get_detail_list(manager, this_page)	
 			rescue
+				puts "  error!"
 				error_sequence += 1
 				if error_sequence == 20
 					puts "*** 20 sequence error ***"
@@ -42,10 +48,12 @@ class Crawls::GetBagPage
 			next_item = this_page.at("//*[@id=\"result_" + manager.progress_item.to_s + "\"]/h3/a") if next_item.blank?
 			break if next_item.blank?
 
+			puts "detail_loop" + next_item.to_s[0..20]
+
 			detail_url = next_item.attribute("href").to_s.match(/\/dp\//).post_match
 			detail_url = "http://www.amazon.co.jp/dp/" + detail_url
 
-			detail_obj = CrawlBagDetailManager.new(:url => detail_url,:bag_tag_id => manager.bag_tag.id)
+			detail_obj = CrawlBagDetailManager.new(:url => detail_url, :bag_tag_id => manager.bag_tag.id)
 			detail_list.push(detail_obj)
 
 			manager.progress_item += 1
