@@ -7,19 +7,35 @@ class Crawls::GetBagPage
 
 	# rails runner Crawls::GetBagPage.execute
 	def self.execute
+		error_sequence = 0
 
+		loop {
+			manager = CrawlBagPageManager.find_by(done_flag: false)
+			break if manager == nil
+
+			begin
+				page_url = manager.url + manager.progress_page
+				this_page = Nokogiri::HTML(open(page_url, &:read).toutf8)
+				sleep(1)
+				error_sequence = 0
+				self.get_detail_list(manager, this_page)	
+			rescue
+				error_sequence += 1
+				if error_sequence == 20
+					puts "*** 20 sequence error ***"
+					return
+				end
+			end
+		}
+
+		puts "*** everything done ***"
+		return
 	end
 
 
 
-	def self.page_to_detail
+	def self.get_detail_list(manager, this_page)		
 
-		manager = CrawlBagPageManager.find_by(done_flag: false)
-		page_url = manager.url + manager.progress_page
-		this_page = Nokogiri::HTML(open(page_url, &:read).toutf8)
-		sleep(1)
-
-		# get detail_list
 		detail_list = []
 		loop {
 			next_item = this_page.at("//*[@id=\"result_" + manager.progress_item.to_s + "\"]/div/div[2]/div[1]/a")
@@ -29,13 +45,15 @@ class Crawls::GetBagPage
 			detail_url = next_item.attribute("href").to_s.match(/\/dp\//).post_match
 			detail_url = "http://www.amazon.co.jp/dp/" + detail_url
 
-			detail_list.push(detail_url)
+			detail_obj = CrawlBagDetailManager.new(:url => detail_url,:bag_tag_id => manager.bag_tag.id)
+			detail_list.push(detail_obj)
+
 			manager.progress_item += 1
 		}
 		manager.progress_page += 1
 
 		# insert
-		# code here + manager.bag_tag_id
+		CrawlBagDetailManager.import detail_list
 
 		# is end_of_paging?
 		next_page = this_page.at("//*[@id=\"pagnNextLink\"]")
