@@ -93,6 +93,7 @@ class Crawls::GetBagDetail
 		this_url = manager.url
 		sleep(1)
 		this_detail = Nokogiri::HTML(open(this_url, &:read).toutf8)
+		puts "  after crawl"
 
 		# get basic parameters
 		detail_name = self.get_name(this_detail)
@@ -101,9 +102,10 @@ class Crawls::GetBagDetail
 
 		# get size parameters
 		size_hash = self.get_size(this_detail)
-		detail_width = size_hash["width"]
-		detail_height = size_hash["height"]
-		detail_depth = size_hash["depth"]
+		detail_width = size_hash["width"].to_i
+		detail_height = size_hash["height"].to_i
+		detail_depth = size_hash["depth"].to_i
+		puts "b"
 
 		# error check
 		if detail_name == nil || detail_image == nil || detail_price == 0 || detail_width == 0 || detail_height == 0
@@ -201,6 +203,7 @@ class Crawls::GetBagDetail
 
 
 	def self.get_size(this_detail)
+		#️ 2つ目のパターンに当てはまらない問題！
 		detail_size_doc = this_detail.at("//*[@id=\"feature-bullets\"]/ul")
 		detail_size_doc = this_detail.at("//*[@id=\"productDescription\"]/div/div") if detail_size_doc == nil
 		if detail_size_doc == nil || detail_size_doc.to_s.blank?
@@ -220,10 +223,16 @@ class Crawls::GetBagDetail
 		# get_size_score in other case
 		if detail_width == detail_height && detail_width == detail_depth && detail_width == 0
 			slice_size_hash = self.get_size_when_slice_pattern(detail_size_doc)
+			
+			# 取得できない問題！
+			# slice_size_hash自体は取得できている！
+			p slice_size_hash["width"]
+
 			detail_width = slice_size_hash["width"]
 			detail_height = slice_size_hash["height"]
 			detail_depth = slice_size_hash["depth"]
 		end
+		puts "4"
 
 		return { "width" => detail_width, "height" => detail_height, "depth" => detail_depth}
 	end
