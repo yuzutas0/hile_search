@@ -278,54 +278,52 @@ class Crawls::GetBagDetail
 		detail_depth = 0
 
 		# size：19.5cm×11.5cm×4.3cm
-		slicers = ["x", "×", "ｘ"]
-		is_slice_pattern = self.is_slice_pattern(detail_size_doc, slicers)
+		["x", "×", "ｘ"].each { |slicer|
+			is_slice_pattern = self.is_slice_pattern(detail_size_doc, slicer)
+			if is_slice_pattern > 0
+				if detail_size_doc.to_s.match(/#{slicer}/).pre_match.size > 10
+					detail_width_string = detail_size_doc.to_s.match(/#{slicer}/).pre_match.to_s[-10..-1].match(/[0-9０-９]+/)
+				else
+					detail_width_string = detail_size_doc.to_s.match(/#{slicer}/).pre_match.match(/[0-9０-９]+/)
+				end
+				detail_width = self.get_size_score_by_slicer(detail_width_string)
 
-		if is_slice_pattern["result"] == "1" || is_slice_pattern["result"] == "2"
-			slicer = is_slice_pattern["slicer"]
-
-			if detail_size_doc.to_s.match(/#{slicer}/).pre_match.size > 10
-				detail_width_string = detail_size_doc.to_s.match(/#{slicer}/).pre_match.to_s[-10..-1].match(/[0-9０-９]+/)
-			else
-				detail_width_string = detail_size_doc.to_s.match(/#{slicer}/).pre_match.match(/[0-9０-９]+/)
+				detail_height_string = detail_size_doc.to_s.match(/#{slicer}/).post_match.match(/[0-9０-９]+/)
+				detail_height = self.get_size_score_by_slicer(detail_height_string)
+				
+				if is_slice_pattern == 2
+					detail_depth_string = detail_size_doc.to_s.match(/#{slicer}/).post_match.match(/#{slicer}/).post_match.match(/[0-9０-９]+/)
+					detail_depth = self.get_size_score_by_slicer(detail_depth_string)
+				end
 			end
-			detail_width = self.get_size_score_by_slicer(detail_width_string)
 
-			detail_height_string = detail_size_doc.to_s.match(/#{slicer}/).post_match.match(/[0-9０-９]+/)
-			detail_height = self.get_size_score_by_slicer(detail_height_string)
-			
-			if is_slice_pattern["result"] == "2"
-				detail_depth_string = detail_size_doc.to_s.match(/#{slicer}/).post_match.match(/#{slicer}/).post_match.match(/[0-9０-９]+/)
-				detail_depth = self.get_size_score_by_slicer(detail_depth_string)
-			end
-		end
+			break if detail_width > 0 && detail_height > 0
+		}
 
 		return { "width" => detail_width, "height" => detail_height, "depth" => detail_depth }
 	end
 
 
 
-	def self.is_slice_pattern(detail_size_doc, slicers)
-		resultset = { "result" => "0", "slicer" => nil}
-		slicers.each { |slicer| 
+	def self.is_slice_pattern(detail_size_doc, slicer)
+		result = 0
 			tmp_detail_size_doc = detail_size_doc
 			count = 0
 			until tmp_detail_size_doc == nil || tmp_detail_size_doc.blank?
 				if detail_size_doc.to_s.match(/#{slicer}/) != nil
 					if detail_size_doc.to_s.match(/#{slicer}/).post_match.to_s[1..10].match(/#{slicer}/) != nil
-						return { "result" => "2", "slicer" => slicer }
+						return 2
 					else
-						resultset = { "result" => "1", "slicer" => slicer}
+						result = 1
 						tmp_detail_size_doc = detail_size_doc.to_s.match(/#{slicer}/).post_match.to_s
 						count += 1
-						return resultset if count > 10
+						return result if count > 10
 					end
 				else
 					break
 				end
 			end
-		}
-		return resultset
+		return result
 	end
 
 
