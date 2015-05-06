@@ -51,27 +51,42 @@ class Crawls::GetBagDetail
 			return
 		end
 
+		# same check
+		url_dp = manager.url.match(/\/dp\//).post_match
+		if self.check_same_dp_url(url_dp, manager.bag_tag)
+			manager.update_attribute(:done_flag, true)
+			puts "tag-association update!"
+			return
+		end
+
 		error_sequence = 0
 		while_sequence = 0
 		
 		while !manager.done_flag && !manager.error_flag
+			puts " crawl!"
+			sleep(1)
+			
 			begin
-				puts " crawl!"
-				self.detail_to_array(manager)
+				this_detail = Nokogiri::HTML(open(manager.url, &:read).toutf8)
+				puts "  crawl done!"
 				error_sequence = 0
 			rescue
 				puts "  error!"
 				error_sequence += 1
-				if error_sequence >= 30
-					puts "*** 30 sequence error ***"
-					puts manager.url
-					return
-				end
+			end
+
+			self.detail_to_array(manager, this_detail) if this_detail != nil
+
+			if error_sequence >= 30
+				puts "*** 30 sequence error ***"
+				puts manager.url
+				return
 			end
 
 			while_sequence += 1
 			if while_sequence >= 50
 				puts "*** 50 sequence while ***"
+				puts manager.url
 				return
 			end
 		end
@@ -79,23 +94,10 @@ class Crawls::GetBagDetail
 
 
 
-	def self.detail_to_array(manager)
-
-		# same check
-		detail_url_dp = manager.url.match(/\/dp\//).post_match
-		if self.check_same_dp_url(detail_url_dp, manager.bag_tag)
-			manager.update_attribute(:done_flag, true)
-			puts "tag-association update!"
-			return
-		end
-
-		# crawl
-		this_url = manager.url
-		sleep(1)
-		this_detail = Nokogiri::HTML(open(this_url, &:read).toutf8)
-		puts "  after crawl"
+	def self.detail_to_array(manager, this_detail)
 
 		# get basic parameters
+		detail_url_dp = manager.url.match(/\/dp\//).post_match
 		detail_name = self.get_name(this_detail)
 		detail_image = self.get_image(this_detail)
 		detail_price = self.get_price(this_detail)
@@ -105,7 +107,6 @@ class Crawls::GetBagDetail
 		detail_width = size_hash["width"].to_i
 		detail_height = size_hash["height"].to_i
 		detail_depth = size_hash["depth"].to_i
-		puts "b"
 
 		# error check
 		if detail_name == nil || detail_image == nil || detail_price == 0 || detail_width == 0 || detail_height == 0
@@ -133,7 +134,7 @@ class Crawls::GetBagDetail
 															:depth     => detail_depth,
 															:price     => detail_price,
 															:image_url => detail_image)
-		detail_item.bag_tags.push(manager.bag_tag)
+		detail_item.bag_tags << manager.bag_tag
 		detail_item.tap(&:save)
 
 		puts "save => " + detail_item.name
@@ -154,7 +155,7 @@ class Crawls::GetBagDetail
 	def self.check_same_dp_url(detail_url_dp, bag_tag)
 		item = BagItem.find_by(url_dp: detail_url_dp)
 		if item != nil
-			item.bag_tag << bag_tag
+			item.bag_tags << bag_tag
 			item.save
 			return true
 		else
@@ -203,9 +204,20 @@ class Crawls::GetBagDetail
 
 
 	def self.get_size(this_detail)
-		#️ 2つ目のパターンに当てはまらない問題！
 		detail_size_doc = this_detail.at("//*[@id=\"feature-bullets\"]/ul")
-		detail_size_doc = this_detail.at("//*[@id=\"productDescription\"]/div/div") if detail_size_doc == nil
+		response = self.get_size_by_xpath(detail_size_doc)
+
+		if response["width"].to_i == 0 || response["height"].to_i == 0
+			detail_size_doc = this_detail.at("//*[@id=\"productDescription\"]/div/div")
+			response = self.get_size_by_xpath(detail_size_doc)
+		end
+
+		return response
+	end
+
+
+
+	def self.get_size_by_xpath(detail_size_doc)
 		if detail_size_doc == nil || detail_size_doc.to_s.blank?
 			return { "width" => 0, "height" => 0, "depth" => 0 }
 		end
@@ -221,20 +233,15 @@ class Crawls::GetBagDetail
 		detail_depth = self.get_size_score(["奥", "マチ", "マッチ", "幅", "厚","Ｄ", "D"], detail_size_doc)
 
 		# get_size_score in other case
-		if detail_width == detail_height && detail_width == detail_depth && detail_width == 0
+		if detail_width == 0 && detail_height == 0
 			slice_size_hash = self.get_size_when_slice_pattern(detail_size_doc)
-			
-			# 取得できない問題！
-			# slice_size_hash自体は取得できている！
-			p slice_size_hash["width"]
-
+			# 取得できない問題！ slice_size_hash自体は取得できている！
 			detail_width = slice_size_hash["width"]
 			detail_height = slice_size_hash["height"]
 			detail_depth = slice_size_hash["depth"]
 		end
-		puts "4"
 
-		return { "width" => detail_width, "height" => detail_height, "depth" => detail_depth}
+		return { "width" => detail_width, "height" => detail_height, "depth" => detail_depth }
 	end
 
 
@@ -275,6 +282,7 @@ class Crawls::GetBagDetail
 				detail_width_string = detail_size_doc.to_s.match(/#{slicer}/).pre_match.match(/[0-9０-９]+/)
 			end
 			detail_width = self.get_size_score_by_slicer(detail_width_string)
+
 			detail_height_string = detail_size_doc.to_s.match(/#{slicer}/).post_match.match(/[0-9０-９]+/)
 			detail_height = self.get_size_score_by_slicer(detail_height_string)
 			
