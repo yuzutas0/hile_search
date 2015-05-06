@@ -45,6 +45,7 @@ class Crawls::GetBagDetail
 	# rails runner Crawls::GetBagDetail.execute_single
 	# for check test
 	def self.execute_single
+		puts "getting manager..."
 		manager = CrawlBagDetailManager.find_by(done_flag: false, error_flag: false)
 		if manager == nil
 			puts "*** everything done ***"
@@ -52,6 +53,7 @@ class Crawls::GetBagDetail
 		end
 
 		# same check
+		puts "same check..."
 		url_dp = manager.url.match(/\/dp\//).post_match
 		if self.check_same_dp_url(url_dp, manager.bag_tag)
 			manager.update_attribute(:done_flag, true)
@@ -59,14 +61,15 @@ class Crawls::GetBagDetail
 			return
 		end
 
+		puts "while ready..."
 		error_sequence = 0
 		while_sequence = 0
 		
 		while !manager.done_flag && !manager.error_flag
-			puts " crawl!"
-			sleep(1)
 			
 			begin
+				puts " crawl!"
+				sleep(1)
 				this_detail = Nokogiri::HTML(open(manager.url, &:read).toutf8)
 				puts "  crawl done!"
 				error_sequence = 0
@@ -104,9 +107,9 @@ class Crawls::GetBagDetail
 
 		# get size parameters
 		size_hash = self.get_size(this_detail)
-		detail_width = size_hash["width"].to_i
-		detail_height = size_hash["height"].to_i
-		detail_depth = size_hash["depth"].to_i
+		detail_width = size_hash["width"]
+		detail_height = size_hash["height"]
+		detail_depth = size_hash["depth"]
 
 		# error check
 		if detail_name == nil || detail_image == nil || detail_price == 0 || detail_width == 0 || detail_height == 0
@@ -235,7 +238,6 @@ class Crawls::GetBagDetail
 		# get_size_score in other case
 		if detail_width == 0 && detail_height == 0
 			slice_size_hash = self.get_size_when_slice_pattern(detail_size_doc)
-			# 取得できない問題！ slice_size_hash自体は取得できている！
 			detail_width = slice_size_hash["width"]
 			detail_height = slice_size_hash["height"]
 			detail_depth = slice_size_hash["depth"]
@@ -292,7 +294,7 @@ class Crawls::GetBagDetail
 			end
 		end
 
-		return ["width" => detail_width, "height" => detail_height, "depth" => detail_depth]
+		return { "width" => detail_width, "height" => detail_height, "depth" => detail_depth }
 	end
 
 
