@@ -1,1 +1,31 @@
-<p>Device Brands Index</p>
+<p>持ち運びたいノートPCを選択してください</p>
+
+<ul>
+	<% for device_brand in @device_brands do %>
+	<li><%= device_brand.name %></li>
+	<ul>
+
+		<% for device_brand_child in device_brand.children %>
+		<li><%= device_brand_child.name %></li>
+		<ul>
+
+			<% if device_brand_child.device_items.blank? %>
+			<li>*** このシリーズの機種は現在取り扱っておりません ***</li>
+			<% end %>
+			<% for device_item in device_brand_child.device_items %>
+			<li><%= device_item.name %></li>
+			<% end %>
+
+		</ul>
+		<% end %>
+
+		<% if device_brand.children.blank? && device_brand.device_items.blank? %>
+		<li>*** このシリーズの機種は現在取り扱っておりません ***</li>
+		<% end %>
+		<% for device_item in device_brand.device_items %>
+		<li><%= device_item.name %></li>
+		<% end %>
+
+	</ul>
+	<% end %>
+</ul>
