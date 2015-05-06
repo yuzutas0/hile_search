@@ -111,16 +111,22 @@ class Crawls::GetBagDetail
 		detail_height = size_hash["height"]
 		detail_depth = size_hash["depth"]
 
+		# mm => cm
+		if detail_width >= 200 || detail_height >= 200
+			detail_width = detail_width / 10
+			detail_height = detail_height / 10
+			detail_depth = detail_depth / 10
+		end
+
 		# error check
 		if detail_name == nil || detail_image == nil || detail_price == 0 || detail_width == 0 || detail_height == 0
-			puts "e"
 			manager.update_attribute(:error_flag, true)
 			puts "get_name mistake!" if detail_name == nil
-			puts "get_name mistake!" if detail_image == nil
-			puts "get_name mistake!" if detail_price == 0
-			puts "get_name mistake!" if detail_width == 0
-			puts "get_name mistake!" if detail_height == 0
-			puts "url ===> " + this_url
+			puts "get_image mistake!" if detail_image == nil
+			puts "get_price mistake!" if detail_price == 0
+			puts "get_width mistake!" if detail_width == 0
+			puts "get_height mistake!" if detail_height == 0
+			puts "url ===> " + manager.url
 			return
 		end
 
@@ -232,8 +238,8 @@ class Crawls::GetBagDetail
 
 		# get_size_score
 		detail_width = self.get_size_score(["横", "ヨコ", "長", "幅", "Ｗ", "W"], detail_size_doc)
-		detail_height = self.get_size_score(["縦", "タテ", "高", "厚", "マチ", "Ｈ", "H"], detail_size_doc)
-		detail_depth = self.get_size_score(["奥", "マチ", "マッチ", "幅", "厚","Ｄ", "D"], detail_size_doc)
+		detail_height = self.get_size_score(["縦", "タテ", "高", "厚", "マチ", "マッチ", "まち", "Ｈ", "H"], detail_size_doc)
+		detail_depth = self.get_size_score(["奥", "マチ", "マッチ", "まち", "幅", "厚","Ｄ", "D"], detail_size_doc)
 
 		# get_size_score in other case
 		if detail_width == 0 && detail_height == 0
@@ -272,7 +278,7 @@ class Crawls::GetBagDetail
 		detail_depth = 0
 
 		# size：19.5cm×11.5cm×4.3cm
-		slicers = ["x", "×"]
+		slicers = ['x', '×']
 		is_slice_pattern = self.is_slice_pattern(detail_size_doc, slicers)
 
 		if is_slice_pattern["result"] == "1" || is_slice_pattern["result"] == "2"
