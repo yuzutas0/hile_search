@@ -1,0 +1,2 @@
+module DeviceBrandsControllerHelper
+end

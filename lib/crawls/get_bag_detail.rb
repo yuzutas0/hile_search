@@ -32,6 +32,30 @@ class Crawls::GetBagDetail
 
 
 
+	# rails runner Crawls::GetBagDetail.execute_ten_thousand
+	def self.execute_ten_thousand
+		for now_number in 1..10 do
+			self.execute_thousand
+			puts " ===> ===> ===> finish ===> ===> ===> " + (now_number * 1000).to_s + "/10000"
+		end
+	end
+
+	# rails runner Crawls::GetBagDetail.execute_thousand
+	def self.execute_thousand
+		for now_number in 1..10 do
+			self.execute_hundred
+			puts " ===> ===> finish ===> ===> " + (now_number * 100).to_s + "/1000"
+		end
+	end
+
+	# rails runner Crawls::GetBagDetail.execute_hundred
+	def self.execute_hundred
+		for now_number in 1..10 do
+			self.execute_ten
+			puts " ===> finish ===> " + (now_number * 10).to_s + "/100"
+		end
+	end
+
 	# rails runner Crawls::GetBagDetail.execute_ten
 	def self.execute_ten
 		for now_number in 1..10 do
