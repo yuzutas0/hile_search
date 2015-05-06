@@ -216,7 +216,7 @@ class Crawls::GetBagDetail
 		detail_size_doc = this_detail.at("//*[@id=\"feature-bullets\"]/ul")
 		response = self.get_size_by_xpath(detail_size_doc)
 
-		if response["width"].to_i == 0 || response["height"].to_i == 0
+		if response["width"] == 0 || response["height"] == 0
 			detail_size_doc = this_detail.at("//*[@id=\"productDescription\"]/div/div")
 			response = self.get_size_by_xpath(detail_size_doc)
 		end
@@ -242,7 +242,7 @@ class Crawls::GetBagDetail
 		detail_depth = self.get_size_score(["奥", "マチ", "マッチ", "まち", "幅", "厚","Ｄ", "D"], detail_size_doc)
 
 		# get_size_score in other case
-		if detail_width == 0 && detail_height == 0
+		if detail_width == 0 || detail_height == 0
 			slice_size_hash = self.get_size_when_slice_pattern(detail_size_doc)
 			detail_width = slice_size_hash["width"]
 			detail_height = slice_size_hash["height"]
@@ -278,7 +278,7 @@ class Crawls::GetBagDetail
 		detail_depth = 0
 
 		# size：19.5cm×11.5cm×4.3cm
-		slicers = ['x', '×']
+		slicers = ["x", "×", "ｘ"]
 		is_slice_pattern = self.is_slice_pattern(detail_size_doc, slicers)
 
 		if is_slice_pattern["result"] == "1" || is_slice_pattern["result"] == "2"
