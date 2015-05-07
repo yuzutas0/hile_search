@@ -104,16 +104,18 @@ class Crawls::GetBagDetail
 
 			self.detail_to_array(manager, this_detail) if this_detail != nil
 
-			if error_sequence >= 30
-				puts "*** 30 sequence error ***"
+			if error_sequence >= 100
+				puts "*** 100 sequence error ***"
 				puts manager.url
+				manager.update_attribute(:error_flag, true)
 				return
 			end
 
 			while_sequence += 1
-			if while_sequence >= 50
-				puts "*** 50 sequence while ***"
+			if while_sequence >= 100
+				puts "*** 100 sequence while ***"
 				puts manager.url
+				manager.update_attribute(:error_flag, true)
 				return
 			end
 		end
