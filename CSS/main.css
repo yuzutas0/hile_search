@@ -15,7 +15,7 @@ header {
 }
 
 header h1 {
-  margin: 0;
+  margin-top: 0;
   padding: 0;
 }
 
@@ -53,16 +53,16 @@ footer p {
 /* character */
 
 html, body {
+  font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
   font-size: 13px;
 }
 
 header h1 {
   font-size: 18px;
-  font-weight: normal;
 }
 
 header h2 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: normal;
 }
 
@@ -73,33 +73,19 @@ footer a {
 
 /* color */
 
-header {
-  background-color: #222;
+html, body {
+  color: #454545; 
 }
 
 header h1 {
-  color: #fff;
+  color: #256FBA;
 }
 
-header h2 {
-  color: #ccc;
+header p span {
+  color: #256FBA;
 }
 
-header p {
-  color: #ccc;
-}
-
-header p span.red {
-  color: #DD4B39;
-}
-
-footer {
-  background-color: #222;
-}
-footer p {
-  color: #ccc;
-}
 footer a {
-  color: #4D90FE;
+  color: #256FBA;
 }
 
