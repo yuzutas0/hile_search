@@ -35,7 +35,7 @@ div#container {
 }
 
 main {
-  padding-bottom: 120px;
+  padding-bottom: 110px;
 }
 
 footer {
@@ -43,27 +43,26 @@ footer {
   padding: 10px 0px;
   position: absolute;
   bottom: 0;
-  height: 80px;
+  height: 70px;
 }
 
 footer p {
   margin: 0;
 }
 
-
-
 /* character */
 
 html, body {
-  font-size: 16px;
+  font-size: 13px;
 }
 
 header h1 {
-  font-size: 20px;
+  font-size: 18px;
+  font-weight: normal;
 }
 
 header h2 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: normal;
 }
 
@@ -75,28 +74,32 @@ footer a {
 /* color */
 
 header {
-  background-color: #000000;
+  background-color: #222;
 }
 
 header h1 {
-  color: #ffffff;
+  color: #fff;
 }
 
 header h2 {
-  color: #ffffff;
+  color: #ccc;
 }
 
 header p {
-  color: #ffffff;
+  color: #ccc;
+}
+
+header p span.red {
+  color: #DD4B39;
 }
 
 footer {
-  background-color: #000000;
+  background-color: #222;
 }
 footer p {
-  color: #ffffff;
+  color: #ccc;
 }
 footer a {
-  color: #66ffff;
+  color: #4D90FE;
 }
 
