@@ -7,24 +7,24 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-<div>
+<div id="container">
 
 <header>
 	<h1>Hile Search(α)</h1>
 	<h2>あなたのノートPCが入るバッグをサーチします</h2>
 	<% if @device_count.present? && @bag_count.present? %>
-	<p>現在<%= @device_count %>種類のノートPCと<%= @bag_count %>種類のバッグに対応中</p>
+	<p>現在<span><%= @device_count %></span>種類のノートPCと<span><%= @bag_count %></span>種類のバッグに対応中</p>
 	<% end %>
 </header>
 
+<main>
 <%= yield %>
+</main>
 
 <footer>
-	<p>
-		Hile Search(α)はWeb上の情報からPCとバッグのサイズを取得・編集して情報を提供するサービスです。</br>
-		本サービスを利用したことにより発生したいかなる損害に対しても、運営者はその責任を負わないものとします｡
-	</p>
-	<%= link_to "ご意見・ご要望", contact_path %>
+<p>Hile Search(α)はWeb上の情報からPCとバッグのサイズを取得・編集して情報を提供するサービスです。</br>
+本サービスを利用したことにより発生したいかなる損害に対しても、運営者はその責任を負わないものとします｡</p>
+<%= link_to "ご意見・ご要望", contact_path %>
 </footer>
 
 </div>

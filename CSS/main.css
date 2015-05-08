@@ -89,3 +89,129 @@ footer a {
   color: #256FBA;
 }
 
+
+
+/* device_brands */
+
+/* position */
+
+main {
+  margin-top: 50px;
+}
+
+.ac-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.ac-container label {
+  min-height: 20px;
+  height: auto;
+  display: block;
+  padding: 5px;
+  margin: 0;
+}
+
+.ac-container input ~ div p {
+  margin: 0;
+  padding: 5px;
+}
+
+.ac-container a {
+  text-decoration: none;
+}
+
+/* character */
+
+.ac-container label {
+  font-weight: bold;
+  text-align: left;
+}
+
+.ac-container input ~ div label {
+  font-weight: normal;
+  text-align: center;
+}
+
+.ac-container input ~ div p {
+  text-align: right;
+}
+
+.ac-container i {
+  text-align: left;
+}
+
+/* color */
+
+.ac-container {
+  border: 1px #ccc;
+  border-top: none;
+}
+
+.ac-container label {
+  color: #666;
+  background: #ddd;
+  border-top: 1px solid #ccc;
+}
+
+.ac-container input ~ div label {
+  background: #eee;
+}
+
+.ac-container input ~ div p {
+  border-top: 1px solid #ccc;
+}
+
+.ac-container a {
+  color: #256FBA;
+}
+
+.ac-container i {
+  font-size: 16px;
+  padding: 0 10px 0 5px;
+}
+
+/* attribute */
+.ac-container input {
+  display: none;
+}
+
+.ac-container label {
+  cursor: pointer;
+}
+
+.ac-container input ~ div {
+  overflow: hidden;
+  height: 0;
+  transition: 0.6s;
+}
+
+.ac-container input:checked ~ div {
+  height: auto;
+}
+
+
+
+/* contact */
+
+/* position */
+.contact a {
+  text-decoration: none;
+}
+
+/* character */
+.contact i {
+  font-size: 200px;
+}
+
+/* color */
+.contact i.fa-github-square {
+  color: #87c040;
+}
+
+.contact i.fa-twitter-square {
+  color: #00aced;
+}
+
+
+/* attribute */
