@@ -11,25 +11,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150505053958) do
+ActiveRecord::Schema.define(version: 20150514115246) do
 
   create_table "bag_items", force: true do |t|
-    t.string   "name",       null: false
-    t.string   "url_dp",     null: false
-    t.integer  "width",      null: false
-    t.integer  "height",     null: false
+    t.string   "name",                    null: false
+    t.string   "url_dp",                  null: false
+    t.integer  "width",                   null: false
+    t.integer  "height",                  null: false
     t.integer  "depth"
-    t.integer  "price",      null: false
+    t.integer  "price",                   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "image_url"
+    t.integer  "long_side",   default: 0, null: false
+    t.integer  "middle_side", default: 0, null: false
+    t.integer  "short_side",  default: 0, null: false
   end
 
-  add_index "bag_items", ["depth"], name: "index_bag_items_on_depth"
-  add_index "bag_items", ["height"], name: "index_bag_items_on_height"
+  add_index "bag_items", ["long_side"], name: "index_bag_items_on_long_side"
+  add_index "bag_items", ["middle_side"], name: "index_bag_items_on_middle_side"
   add_index "bag_items", ["price"], name: "index_bag_items_on_price"
+  add_index "bag_items", ["short_side"], name: "index_bag_items_on_short_side"
   add_index "bag_items", ["url_dp"], name: "index_bag_items_on_url_dp"
-  add_index "bag_items", ["width"], name: "index_bag_items_on_width"
 
   create_table "bag_items_bag_tags", id: false, force: true do |t|
     t.integer "bag_item_id", null: false
@@ -81,18 +84,21 @@ ActiveRecord::Schema.define(version: 20150505053958) do
   add_index "device_brands", ["parent_id"], name: "index_device_brands_on_parent_id"
 
   create_table "device_items", force: true do |t|
-    t.string   "name",            null: false
-    t.integer  "width",           null: false
-    t.integer  "height",          null: false
+    t.string   "name",                        null: false
+    t.integer  "width",                       null: false
+    t.integer  "height",                      null: false
     t.integer  "depth"
-    t.integer  "device_brand_id", null: false
+    t.integer  "device_brand_id",             null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "long_side",       default: 0, null: false
+    t.integer  "middle_side",     default: 0, null: false
+    t.integer  "short_side",      default: 0, null: false
   end
 
-  add_index "device_items", ["depth"], name: "index_device_items_on_depth"
   add_index "device_items", ["device_brand_id"], name: "index_device_items_on_device_brand_id"
-  add_index "device_items", ["height"], name: "index_device_items_on_height"
-  add_index "device_items", ["width"], name: "index_device_items_on_width"
+  add_index "device_items", ["long_side"], name: "index_device_items_on_long_side"
+  add_index "device_items", ["middle_side"], name: "index_device_items_on_middle_side"
+  add_index "device_items", ["short_side"], name: "index_device_items_on_short_side"
 
 end
