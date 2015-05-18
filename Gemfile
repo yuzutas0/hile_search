@@ -12,6 +12,7 @@ gem 'jbuilder', '~> 1.2'
 
 gem 'nokogiri', '1.6.3.1'
 gem 'activerecord-import', '0.7.0'
+gem 'ransack', '1.6.6'
 
 group :doc do
   gem 'sdoc', require: false
