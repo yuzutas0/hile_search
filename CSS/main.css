@@ -195,8 +195,12 @@ main {
 /* contact */
 
 /* position */
-.contact a {
-  text-decoration: none;
+.contact button {
+  margin-top: 15px;
+}
+
+.contact button.twitter {
+  margin-right: 80px;
 }
 
 /* character */
@@ -204,16 +208,35 @@ main {
   font-size: 200px;
 }
 
-/* color */
-.contact .github a {
-  color: #87c040;
+.contact p {
+  font-size: 18px;
 }
 
-.contact .twitter a {
+/* color */
+
+.contact .twitter {
+  border: 4px solid #00aced;
+}
+
+.contact .twitter i {
   color: #00aced;
 }
 
+.contact .twitter p {
+  color: #00aced;
+}
 
+.contact .github {
+  border: 4px solid #87c040;
+}
+
+.contact .github i {
+  color: #87c040;
+}
+
+.contact .github p {
+  color: #87c040;
+}
 
 /* paging */
 
