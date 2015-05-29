@@ -214,28 +214,24 @@ main {
 
 /* color */
 
+.contact button {
+  background-color: #fff;
+}
+
 .contact .twitter {
-  border: 4px solid #00aced;
-}
-
-.contact .twitter i {
-  color: #00aced;
-}
-
-.contact .twitter p {
-  color: #00aced;
+  padding: 0 30px;
+  color: #fff;
+  background-color: #00aced;
+  border: 1px solid #00aced;
+  border-radius: 5px;
 }
 
 .contact .github {
-  border: 4px solid #87c040;
-}
-
-.contact .github i {
-  color: #87c040;
-}
-
-.contact .github p {
-  color: #87c040;
+  padding: 0 30px;
+  color: #fff;
+  background-color: #87c040;
+  border: 1px solid #87c040;
+  border-radius: 5px;
 }
 
 /* paging */
