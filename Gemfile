@@ -14,6 +14,7 @@ gem 'nokogiri', '1.6.3.1'
 gem 'activerecord-import', '0.7.0'
 
 gem "font-awesome-rails", '4.2.0.0'
+gem "vuejs-rails", '0.11.5'
 
 group :doc do
   gem 'sdoc', require: false

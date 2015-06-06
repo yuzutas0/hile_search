@@ -17,6 +17,33 @@
 	<% end %>
 </header>
 
+
+
+<!-- test -->
+<div id="myapp">
+	<p>
+		<input type="text" v-model="name">
+		<!-- HTMLの中身は動的に変わる -->
+		<a href="{{name}}">{{name}}</a>
+		<!-- Rubyの変数は動的に変わらない -->
+		<% if "{{name}}".present? && "{{name}}".length > 1 %>
+			ahhhhhh!!!!{{name}}!!!!!
+		<% end %>
+	</p>
+</div>
+
+<script>
+	var demo = new Vue({
+	  el: "#myapp",
+	  data: {
+			name: "山田"
+	  }
+	});
+</script>
+<!-- test -->
+
+
+
 <main>
 <%= yield %>
 </main>
