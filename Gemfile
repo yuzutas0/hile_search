@@ -13,6 +13,8 @@ gem 'jbuilder', '~> 1.2'
 gem 'nokogiri', '1.6.3.1'
 gem 'activerecord-import', '0.7.0'
 
+gem "font-awesome-rails", '4.2.0.0'
+
 group :doc do
   gem 'sdoc', require: false
 end

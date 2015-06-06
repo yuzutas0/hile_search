@@ -1,3 +1,58 @@
 // Place all the styles related to the contact controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+
+/* position */
+.contact button {
+  margin-top: 15px;
+}
+
+.contact button.twitter {
+  margin-right: 80px;
+}
+
+
+
+/* character */
+.contact i {
+  font-size: 200px;
+}
+
+.contact p {
+  font-size: 18px;
+}
+
+
+
+/* color */
+
+.contact button {
+  background-color: #fff;
+}
+
+.contact .twitter {
+  padding: 0 30px;
+  color: #fff;
+  background-color: #00aced;
+  border: 1px solid #00aced;
+  border-radius: 5px;
+}
+
+.contact .github {
+  padding: 0 30px;
+  color: #fff;
+  background-color: #87c040;
+  border: 1px solid #87c040;
+  border-radius: 5px;
+}
+
+
+
+/* attribute */
+.contact button {
+  cursor: pointer;
+}
+
+
