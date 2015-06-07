@@ -14,6 +14,7 @@ gem 'nokogiri', '1.6.3.1'
 gem 'activerecord-import', '0.7.0'
 
 gem "font-awesome-rails", '4.2.0.0'
+gem 'bootstrap-sass', '3.2.0.2'
 
 group :doc do
   gem 'sdoc', require: false
