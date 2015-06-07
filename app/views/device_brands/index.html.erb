@@ -1,6 +1,12 @@
 <div class="container device_brands_container">
 	<p>持ち運びたいノートPCを選択してください</p>
 
+	<%= form_tag({ controller: :device_brands, action: :index }, id: :device_brands) do %>
+		<%= select :device_brand, :name, options_from_collection_for_select(@device_brands.map{|t| [t.name, t.id]}, :size => 8 %>
+	<% end %>
+
+
+	
 	<select name="device_brand" size="8">
 		<% for device_brand in @device_brands %>
 			<% if device_brand.children.present? || device_brand.device_items.present? %>
