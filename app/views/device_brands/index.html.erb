@@ -1,48 +1,14 @@
 <div class="container device_brands_container">
 	<p>持ち運びたいノートPCを選択してください</p>
 
-	<div class="row">
-		<div class="col-xs-2"></div>
-		
-		<div class="col-xs-3">
-			<p>
-				<select name="device_brands" size="5">
-					<% num = 0 %>
-					<% for device_brand in @device_brands do %>
-						<optgroup label="<%= device_brand.name %>">
-	
-							<% num_child = 0 %>
-							<% for device_brand_child in device_brand.children %>
-								<% if device_brand_child.device_items.blank? %>
-									<option disabled="disabled">*** 取り扱っておりません ***</option>
-								<% else %>
-								<% end %>
-								<option value="<%= num %>_<%= num_child %>"><%= device_brand.name %></option>
-							<% end %>
-	
-						</optgroup>
-						<% num += 1 %>
-					<% end %>
-				</select>
-			</p>
-		</div>
-		
-		<div class="col-xs-2">
-			<i class="fa fa-arrow-right"></i>
-		</div>
-		
-		<div class="col-xs-3">
-			<p>
-				<select name="device_items" size="5">
-					<% for device_item in @device_brands[0].device.device_items do %>
-						<option value="<%= device_item.id %>"><%= device_item.name %></option>
-					<% end %>
-				</select>
-			</p>
-		</div>
-
-		<div class="col-xs-2"></div>
-	<div class="row">
+	<select name="device_brand" size="8">
+		<% for device_brand in @device_brands %>
+			<% if device_brand.children.present? || device_brand.device_items.present? %>
+				<% @val = "b_" + device_brand.id.to_s %>
+				<option value="<%= @val %>"><%= device_brand.name %></option>
+			<% end %>
+		<% end %>
+	</select>
 </div>
 
 

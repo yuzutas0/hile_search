@@ -5,23 +5,17 @@
 	margin-top: 70px;
 }
 
-.device_brands_container .row {
-	margin-top: 60px;
-}
-
 .device_brands_container select {
-	width: 100%;
-}
-
-.device_brands_container i {
-	margin: 20px auto 0; 
+	margin: 50px auto;
+	width: auto;
+	min-width: 50%;
 }
 
 
 
 /* character */
-.device_brands_container i {
-  font-size: 70px;
+.device_brands_container select {
+	text-align: center;
 }
 
 
