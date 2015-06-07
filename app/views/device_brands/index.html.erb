@@ -2,7 +2,7 @@
 	<p>持ち運びたいノートPCを選択してください</p>
 
 	<%= form_tag({ controller: :device_brands, action: :index }, id: :device_brands) do %>
-		<%= select :device_brand, :name, options_from_collection_for_select(@device_brands.map{|t| [t.name, t.id]}, :size => 8 %>
+		<%= select_tag 'device_brand', options_from_collection_for_select(@device_brands, :id, :name), :size => 8 %>
 	<% end %>
 
 
