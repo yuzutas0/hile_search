@@ -30,7 +30,6 @@ class DeviceBrandsController < ApplicationController
 				else
 					@pattern = "nothing"   # nothing
 				end
-				render "device_brands/"
 			end
 		end
 
