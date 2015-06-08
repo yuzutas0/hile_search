@@ -1,36 +1,38 @@
-<div class="container device_brands_container">
-	<p>持ち運びたいノートPCを選択してください</p>
+<div class="device_brands_background">
+	<div class="device_brands_container">
+		<p class="device_brands_message">持ち運びたいPCのブランドを選択してください</p>
 
-	<%= form_tag({ controller: :device_brands, action: :index }, { method: :get, id: :device_brands }) do %>
-		<p>
-			<select name="dbp" size="10">
-				<% for device_brand_parent in @device_brands %>
-					<optgroup label="<%= device_brand_parent.name %>">
+		<%= form_tag({ controller: :device_brands, action: :index }, { method: :get, id: :device_brands }) do %>
+			<p>
+				<select name="dbp" size="10">
+					<% for device_brand_parent in @device_brands %>
+						<optgroup label="　<%= device_brand_parent.name %>">
 
-						<% if device_brand_parent.children.present? %>
-							<% for device_brand_child in device_brand_parent.children %>
-								<% if device_brand_child.device_items.present? %>
-									<option value="<%= device_brand_child.id %>"><%= device_brand_child.name %></option>
-								<% else %>
-									<option disabled><%= device_brand_child.name %></option>
+							<% if device_brand_parent.children.present? %>
+								<% for device_brand_child in device_brand_parent.children %>
+									<% if device_brand_child.device_items.present? %>
+										<option value="<%= device_brand_child.id %>"><%= device_brand_child.name %></option>
+									<% else %>
+										<option disabled><%= device_brand_child.name %></option>
+									<% end %>
 								<% end %>
+
+								<% if device_brand_parent.device_items.present? %>
+									<option value="<%= device_brand_parent.id %>">その他</option>
+								<% end %>
+
+							<% elsif device_brand_parent.device_items.present? %>
+								<option value="<%= device_brand_parent.id %>"><%= device_brand_parent.name %></option>
+
+							<% else %>
+								<option disabled><%= device_brand_parent.name %></option>
 							<% end %>
 
-							<% if device_brand_parent.device_items.present? %>
-								<option value="<%= device_brand_parent.id %>">その他</option>
-							<% end %>
-
-						<% elsif device_brand_parent.device_items.present? %>
-							<option value="<%= device_brand_parent.id %>"><%= device_brand_parent.name %></option>
-
-						<% else %>
-							<option disabled><%= device_brand_parent.name %></option>
-						<% end %>
-
-					</optgroup>
-				<% end %>
-			</select>
-		</p>
-		<p><%= submit_tag('検索', name: nil, class: "btn") %></p>
- <% end %>
+						</optgroup>
+					<% end %>
+				</select>
+			</p>
+			<p><%= submit_tag('PC機種を検索', name: nil, class: "btn btn-info") %></p>
+		<% end %>
+	</div>
 </div>

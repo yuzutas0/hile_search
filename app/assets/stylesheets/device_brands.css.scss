@@ -1,19 +1,29 @@
 
 
 /* position */
+.device_brands_background {
+	width: 100%;
+}
+
 .device_brands_container {
-	margin-top: 70px;
+	margin: 75px auto 0;
+	width: 60%;
+	height: auto;
+}
+
+.device_brands_container .device_brands_message {
+	padding-top: 20px;
 }
 
 .device_brands_container select {
-	margin: 50px auto;
+	margin: 20px auto;
 	width: auto;
-	min-width: 50%;
+	min-width: 85%;
 }
 
 .device_brands_container input {
-	margin: 0 auto;
-	width: 30%;
+	margin: 0 auto 20px;
+	width: 50%;
 }
 
 
@@ -30,11 +40,31 @@
 
 
 /* color */
+/* http://pixabay.com/ja/%E3%83%8F%E3%82%A4%E3%82%AD%E3%83%B3%E3%82%B0-%E6%94%BE%E6%B5%AA%E8%80%85-%E4%BC%91%E6%86%A9-%E3%83%90%E3%83%83%E3%82%AF%E3%83%91%E3%83%83%E3%82%AF-%E3%83%90%E3%83%83%E3%82%AF%E3%83%91%E3%83%83%E3%82%AB%E3%83%BC%E3%82%BA-275796/ */
+main {
+	background: linear-gradient(125deg, #009, #f00) fixed, image-url("hiking-275796_1920_custom2.jpg");
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: left 0px bottom 70px;
+	background-blend-mode: screen;
+}
+
+.device_brands_container {
+	background-color: rgba(255, 255, 255, 0.8);
+	border-radius: 20px;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+}
+
 .device_brands_container optgroup {
 	background-color: #c1e4e9;
 }
 
 .device_brands_container option {
+	background-color: #fff;
+}
+
+footer {
 	background-color: #fff;
 }
 

@@ -26,12 +26,12 @@ h1 {
 
 h2 {
   margin: 0;
-  padding: 0;
+  padding: 0 10px;
 }
 
 header p {
   margin: 0;
-  padding: 0;
+  padding: 0 10px;
 }
 
 #container {
@@ -40,7 +40,7 @@ header p {
 }
 
 main {
-	margin-top: 50px;
+	padding-top: 40px;
   padding-bottom: 110px;
 }
 
@@ -54,6 +54,7 @@ footer {
 
 footer p {
   margin: 0;
+  padding: 0 10px;
 }
 
 
@@ -66,7 +67,7 @@ html, body {
 }
 
 header h1 {
-  font-size: 18px;
+  font-size: 28px;
 }
 
 header h2 {
