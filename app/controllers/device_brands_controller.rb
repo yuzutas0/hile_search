@@ -2,6 +2,10 @@ class DeviceBrandsController < ApplicationController
 
 	def index
 
+		# case: top-page
+		@device_brands = DeviceBrand.where('tree_depth = ?', 0).includes(:device_items)
+		@pattern = "parents"
+
 		# case: brand-parents
 		# exist check
 		if params[:dbp].present?
@@ -26,15 +30,12 @@ class DeviceBrandsController < ApplicationController
 				else
 					@pattern = "nothing"   # nothing
 				end
-				return
+				render "device_brands/"
 			end
 		end
 
 		# case: brand-children
 
-		# case: top-page
-		@device_brands = DeviceBrand.where('tree_depth = ?', 0).includes(:device_items)
-		@pattern = "parents"
 	end
 
 end
