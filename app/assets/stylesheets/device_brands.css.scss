@@ -19,13 +19,24 @@
 
 
 /* character */
-.device_brands_container select {
+.device_brands_container optgroup {
+	text-align: left;
+}
+
+.device_brands_container option {
 	text-align: center;
 }
 
 
 
 /* color */
+.device_brands_container optgroup {
+	background-color: #c1e4e9;
+}
+
+.device_brands_container option {
+	background-color: #fff;
+}
 
 
 
