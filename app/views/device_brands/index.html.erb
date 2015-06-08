@@ -1,7 +1,45 @@
 <div class="container device_brands_container">
 	<p>持ち運びたいノートPCを選択してください</p>
 
-	<%= form_tag({ controller: :device_brands, action: :index }, { method: :get, id: :device_brands }) do %>
-		<p><%= select_tag 'dbp', options_from_collection_for_select(@device_brands, :id, :name), :size => 8 %></p>
-		<p><%= submit_tag('検索', name: nil, class: "btn") %></p>
+
+	<!-- まだ -->
+	<% if @pattern == "both" %>
+		<%= form_tag({ controller: :device_brands, action: :index }, { method: :get, id: :device_brands }) do %>
+			<p><%= select_tag 'dbc', options_from_collection_for_select(@device_brand_children, :id, :name), :size => 8 %></p>
+			<p><%= submit_tag('検索', name: nil, class: "btn") %></p>
+		<% end %>
 	<% end %>
+
+	<% if @pattern == "children" %>
+		<%= form_tag({ controller: :device_brands, action: :index }, { method: :get, id: :device_brands }) do %>
+			<p><%= select_tag 'dbc', options_from_collection_for_select(@device_brand_children, :id, :name), :size => 8 %></p>
+			<p><%= submit_tag('検索', name: nil, class: "btn") %></p>
+		<% end %>
+	<% end %>
+
+	<% if @pattern == "items" %>
+		<%= form_tag({ controller: :bag_items, action: :index }, { method: :get, id: :device_items }) do %>
+			<p><%= select_tag 'di', options_from_collection_for_select(@device_items, :id, :name), :size => 8 %></p>
+			<p><%= submit_tag('検索', name: nil, class: "btn") %></p>
+		<% end %>
+	<% end %>
+
+	<% if @pattern == "nothing" %>
+		<%= form_tag({ controller: :device_brands, action: :index }, { method: :get, id: :device_brands }) do %>
+			<p>
+				<select name="di" size="8">
+					<option value="empty" disabled>*** 現在取り扱っておりません ***</option>
+				</select>
+			</p>
+			<p><%= submit_tag('戻る', name: nil, class: "btn") %></p>
+		<% end %>
+	<% end %>
+
+	<% if @pattern == "parents" %>
+		<%= form_tag({ controller: :device_brands, action: :index }, { method: :get, id: :device_brands }) do %>
+			<p><%= select_tag 'dbp', options_from_collection_for_select(@device_brands, :id, :name), :size => 8 %></p>
+			<p><%= submit_tag('検索', name: nil, class: "btn") %></p>
+		<% end %>
+	<% end %>
+
+
