@@ -9,12 +9,9 @@ class DeviceBrandsController < ApplicationController
 		if dbi.present? && integer_string?(dbi) && dbi.to_i <= max_dbi
 
 			# check object-by-id
-			dbi_obj = DeviceBrand.find(dbi)
-			if dbi_obj.present?
-
-				# check relational-object
-				@this_device_brand = DeviceBrand.find(dbi).includes(:device_items)
-				render template: "device_items/index" if @this_device_brand.device_items.present? and return
+			@this_device_brand = DeviceBrand.find(dbi)				
+			if @this_device_brand.present? && @this_device_brand.device_items.present?
+			 	render template: "device_items/index" and return
 			end
 		end
 
@@ -29,5 +26,5 @@ class DeviceBrandsController < ApplicationController
 		rescue ArgumentError
 			false
 		end
-
+		
 end
