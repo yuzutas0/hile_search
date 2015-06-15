@@ -1,18 +1,20 @@
-<div class="device_brands_background">
-	<div class="device_brands_container">
-		<p class="device_brands_message">持ち運びたいPCの機種ブランドを選択してください</p>
+<main class="device_brands_main">
+	<div class="device_brands_background">
+		<div class="device_brands_container">
+			<p class="device_brands_message">持ち運びたいPCの機種ブランドを選択してください</p>
 
-		<%= form_tag({ controller: :bag_items, action: :index }, {method: :get, id: :device_items}) do %>
-			<p>
-				<select name="dii" size="10">
-					<optgroup label="　<%= @this_device_brand.name %>">
-						<% for device_item in @this_device_brand.device_items %>
-						<option value="<%= device_item.id %>"><%= device_item.name %></option>
-						<% end %>
-					</optgroup>
-				</select>
-			</p>
-			<p><%= submit_tag('鞄を検索', name: nil, class: "btn btn-info") %></p>
-		<% end %>
+			<%= form_tag({ controller: :bag_items, action: :index }, {method: :get, id: :device_items}) do %>
+				<p>
+					<select name="dii" size="10">
+						<optgroup label="　<%= @this_device_brand.name %>">
+							<% for device_item in @this_device_brand.device_items %>
+							<option value="<%= device_item.id %>"><%= device_item.name %></option>
+							<% end %>
+						</optgroup>
+					</select>
+				</p>
+				<p><%= submit_tag('鞄を検索', name: nil, class: "btn btn-info") %></p>
+			<% end %>
+		</div>
 	</div>
-</div>
+</main>
