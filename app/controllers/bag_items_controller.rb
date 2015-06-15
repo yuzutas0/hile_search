@@ -12,7 +12,7 @@ class BagItemsController < ApplicationController
 																short_side: @device.short_side, 
 														}).page(1).per(3).order(:id)
 			puts @bags
-			return
+			return if @bags.present?
 		end
 		redirect_to :root
 	end
