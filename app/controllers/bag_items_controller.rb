@@ -5,14 +5,14 @@ class BagItemsController < ApplicationController
 		dii = params[:dii]
 		max_dii = DeviceItem.maximum(:id)
 		if dii.present? && integer_string?(dii) && dii.to_i <= max_dii
+			@device = DeviceItem.find(dii)
+			puts @device
 			return
 		end
 		redirect_to :root
 	end
 
 	def test
-		@device = DeviceItem.find(params[:id])
-
 		@bags = BagItem.where("long_size > :long_size AND middle_size > :middle_size AND \
 											(short_size = 0 OR short_size > :short_size) AND bag_tag_id IN (:tags)", { 
 													long_size: @device.long_size, 
