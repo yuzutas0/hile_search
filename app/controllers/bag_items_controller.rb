@@ -10,7 +10,7 @@ class BagItemsController < ApplicationController
 																long_side: @device.long_side, 
 																middle_side: @device.middle_side, 
 																short_side: @device.short_side, 
-														})
+														}).page(1).per(3).order(:id)
 			puts @bags
 			return
 		end

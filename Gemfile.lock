@@ -125,7 +125,7 @@ DEPENDENCIES
   font-awesome-rails (= 4.2.0.0)
   jbuilder (~> 1.2)
   jquery-rails
-  kaminari
+  kaminari (= 0.16.3)
   nokogiri (= 1.6.3.1)
   rails (= 4.0.5)
   sass-rails (~> 4.0.2)
