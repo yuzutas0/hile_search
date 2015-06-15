@@ -6,9 +6,6 @@ class BagItemsController < ApplicationController
 		max_dii = DeviceItem.maximum(:id)
 		if dii.present? && integer_string?(dii) && dii.to_i <= max_dii
 			@device = DeviceItem.find(dii)
-			puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-			puts @device.long_side
-			puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 			@bags = BagItem.where("long_side > :long_side AND middle_side > :middle_side AND (short_side = 0 OR short_side > :short_side)",{
 																long_side: @device.long_side, 
 																middle_side: @device.middle_side, 
@@ -35,9 +32,7 @@ class BagItemsController < ApplicationController
 	# = f.check_box :foobar, {multiple: true}, 'foo', nil
 	# = f.check_box :foobar, {multiple: true}, 'bar', nil
 
-	# gem 'kaminari'
 	# <%= paginate(@bags) %>
-
 	# strong_parameter
 
 	private
