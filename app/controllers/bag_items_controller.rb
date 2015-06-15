@@ -1,6 +1,13 @@
 class BagItemsController < ApplicationController
 
 	def index
+		# check params
+		dii = params[:dii]
+		max_dii = DeviceItem.maximum(:id)
+		if dii.present? && integer_string?(dii) && dii.to_i <= max_dii
+			return
+		end
+		redirect_to :root
 	end
 
 	def test
@@ -24,5 +31,13 @@ class BagItemsController < ApplicationController
 	# <%= paginate(@bags) %>
 
 	# strong_parameter
+
+	private
+		def integer_string?(str)
+			Integer(str)
+			true
+		rescue ArgumentError
+			false
+		end
 
 end
