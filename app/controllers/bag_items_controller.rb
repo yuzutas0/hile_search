@@ -1,6 +1,9 @@
 class BagItemsController < ApplicationController
 
 	def index
+	end
+
+	def test
 		@device = DeviceItem.find(params[:id])
 
 		@bags = BagItem.where("long_size > :long_size AND middle_size > :middle_size AND \
