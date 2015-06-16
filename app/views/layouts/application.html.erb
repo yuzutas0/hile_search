@@ -12,8 +12,10 @@
 <header>
 	<h1 onclick="window.location.href='/'">Hile Search(α)</h1>
 	<h2>あなたのノートPCが入るバッグをサーチします</h2>
-	<% if @device_count.present? && @bag_count.present? %>
-	<p>現在<span><%= @device_count %></span>種類のノートPCと<span><%= @bag_count %></span>種類のバッグに対応中</p>
+	<% if @device_count.present? && @bag_count.present? && @last_update.present? %>
+	<p>
+		<span><%= @device_count %></span>のPCと<span><%= @bag_count %></span>のバッグに対応（<span><%= @last_update %></span>更新）
+	</p>
 	<% end %>
 </header>
 

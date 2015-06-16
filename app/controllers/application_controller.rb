@@ -7,6 +7,11 @@ class ApplicationController < ActionController::Base
   def count_filter
 		@device_count = DeviceItem.count
 		@bag_count = BagItem.count
+
+    device_last_update_time = DeviceItem.maximum(:updated_at)
+    bag_last_update_time = BagItem.maximum(:updated_at)
+    last_update_time = [device_last_update_time, bag_last_update_time].compact.max
+    @last_update = last_update_time.strftime("%Y/%m/%d") if last_update_time.present?
   end
 
   def error_handler
