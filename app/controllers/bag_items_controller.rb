@@ -1,18 +1,20 @@
 class BagItemsController < ApplicationController
 
 	def index
-		# check params
+		# check params dii
 		dii = params[:dii]
 		max_dii = DeviceItem.maximum(:id)
 		if dii.present? && integer_string?(dii) && dii.to_i <= max_dii
+
+			# get bags by device
 			@device = DeviceItem.find(dii)
 			@bags = BagItem.where("long_side > :long_side AND middle_side > :middle_side AND (short_side = 0 OR short_side > :short_side)",{
 																long_side: @device.long_side, 
 																middle_side: @device.middle_side, 
 																short_side: @device.short_side, 
-														}).page(1).per(3).order(:id)
+														}).page(params[:page]).per(3).order(:id)
 			puts @bags
-			return if @bags.present?
+			return if @device.present? && @bags.present?
 		end
 		redirect_to :root
 	end
