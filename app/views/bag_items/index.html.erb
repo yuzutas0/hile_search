@@ -1,3 +1,15 @@
 <main class="bag_items_main">
-	<div><%= paginate(@bags, :window => 3) %></div>
+	<div class="bag_items_background">
+		<div class="row">
+
+			<% for bag in @bags %>
+			<div class="col-xs-4">
+				<div class="bag_items_card"><%= bag.name %></div>
+			</div>
+			<% end %>
+
+			<div><%= paginate(@bags, :window => 3) %></div>
+
+		</div>
+	</div>
 </main>

@@ -14,7 +14,16 @@ class BagItemsController < ApplicationController
 																short_side: @device.short_side, 
 														}).page(params[:page]).per(3).order(:id)
 			puts @bags
-			return if @device.present? && @bags.present?
+			if @device.present? && @bags.present?
+
+				# edit data for view
+				@bags.each do |bag|
+					bag.name = bag.name[0...18] + "..." if bag.name.length > 19
+				end
+
+				# view
+				return
+			end
 		end
 		redirect_to :root
 	end
@@ -33,9 +42,6 @@ class BagItemsController < ApplicationController
 	# = form_for @search_form, url: hoge_path, remote: true, html: {method: :get} do |f|
 	# = f.check_box :foobar, {multiple: true}, 'foo', nil
 	# = f.check_box :foobar, {multiple: true}, 'bar', nil
-
-	# <%= paginate(@bags) %>
-	# strong_parameter
 
 	private
 		def integer_string?(str)
