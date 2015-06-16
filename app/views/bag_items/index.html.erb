@@ -1,15 +1,40 @@
 <main class="bag_items_main">
 	<div class="bag_items_background">
+
+		<!-- device -->
+		<div class="bag_items_device">
+			<p>【<%= @device.name %>】<br/>
+				H：<%= @device.height %>cm　
+				W：<%= @device.width %>cm　
+				<% if @device.depth.present? %>
+					D：<%= @device.depth %>cm
+				<% end %>
+			</p>
+		</div>
+
+		<!-- search -->
+		<div class="bag_items_search">
+			<p>test</p>
+		</div>
+
 		<div class="row">
 
+			<!-- bag -->
 			<% for bag in @bags %>
-			<div class="col-xs-4">
-				<div class="bag_items_card"><%= bag.name %></div>
-			</div>
+				<div class="col-xs-4">
+					<div class="bag_items_card">
+						<p><%= bag.name %><p>
+						<p>H：<%= bag.height %></p>
+						<p>W：<%= bag.width %></p>
+						<% if bag.depth.present? %>
+							<p>D：<%= bag.depth %></p>
+						<% end %>
+					</div>
+				</div>
 			<% end %>
 
-			<div><%= paginate(@bags, :window => 3) %></div>
-
 		</div>
+
+		<div class="bag_items_paginate"><%= paginate(@bags, :window => 3) %></div>
 	</div>
 </main>
