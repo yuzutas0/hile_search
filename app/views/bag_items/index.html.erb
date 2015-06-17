@@ -23,12 +23,22 @@
 			<% for bag in @bags %>
 				<div class="col-xs-4">
 					<div class="bag_items_card">
+						<p><%= bag.id %><p>
 						<p><%= bag.name %><p>
+						<p>Image：<%= bag.image_url %><p>
+						<p>URL：<%= bag.url_dp %><p>
+						<p>Price：<%= bag.price %><p>
 						<p>H：<%= bag.height %></p>
 						<p>W：<%= bag.width %></p>
 						<% if bag.depth.present? %>
 							<p>D：<%= bag.depth %></p>
 						<% end %>
+						<p>
+							<% bag.bag_tags.each do |tag| %>
+								<%= tag.name %> <%= tag.id %>
+								<% unless tag.id == bag.bag_tags.last.id %> | <% end %>
+							<% end %>
+						</p>
 					</div>
 				</div>
 			<% end %>
