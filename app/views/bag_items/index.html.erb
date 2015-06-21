@@ -60,10 +60,10 @@
 						<p>
 							<% bag.bag_tags.each do |tag| %>
 								<% if tag.present? && tag.parent.present? %>
-									<%= tag.parent.name %> <%= tag.parent.id %> | 
+									<%= tag.parent.name %> <%= tag.parent.id %> - 
 								<% end %>
 								<%= tag.name %> <%= tag.id %>
-								<% unless tag.id == bag.bag_tags.last.id %> | <% end %>
+								<% unless tag.id == bag.bag_tags.last.id %><br /><% end %>
 							<% end %>
 						</p>
 					</div>
