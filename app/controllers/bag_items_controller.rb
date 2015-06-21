@@ -71,11 +71,6 @@ class BagItemsController < ApplicationController
 											}).page(params[:page]).per(3).order(:id)
 	end
 
-	# tag
-	# = form_for @search_form, url: hoge_path, remote: true, html: {method: :get} do |f|
-	# = f.check_box :foobar, {multiple: true}, 'foo', nil
-	# = f.check_box :foobar, {multiple: true}, 'bar', nil
-
 	private
 		def integer_string?(str)
 			Integer(str)

@@ -5,23 +5,27 @@
 	width: 80%;
 }
 
-.bag_items_search {
+.bag_items_paginate {
 	height: auto;
 	margin-top: 20px;
+}
+
+.bag_items_card {
+	height: 400px;
+	margin-top: 20px;
+	padding: 20px;
+}
+
+.bag_items_search {
+	height: auto;
+	margin-top: 60px;
 }
 
 .bag_items_search_tag_form {
 	text-align: left;
 }
 
-.bag_items_card {
-	height: auto;
-	margin-top: 20px;
-	padding: 20px;
-}
-
-.bag_items_paginate {
-	height: auto;
+.bag_items_search_submit {
 	margin-top: 20px;
 }
 
