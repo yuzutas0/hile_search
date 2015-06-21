@@ -11,13 +11,20 @@
 }
 
 .bag_items_card {
-	height: 400px;
+	height: auto;
 	margin-top: 20px;
 	padding: 20px;
 }
 
 .bag_items_card hr {
 	margin: 0 0 10px 0;
+}
+
+.bag_items_card img {
+	display: block;
+	margin: 10px auto;
+	width: 70%;
+	height: auto;
 }
 
 .bag_items_card .icon_char {
@@ -27,6 +34,7 @@
 
 .bag_items_card form {
 	margin-top: 30px;
+	margin-bottom: 10px;
 }
 
 .bag_items_search {

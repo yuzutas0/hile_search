@@ -19,7 +19,7 @@
 					<div class="bag_items_card">
 						<p><%= bag.name %><p>
 						<hr>
-						<p>Image：<%= bag.image_url %></p>
+						<img src="<%= bag.image_url %>" alt="the_image_of_<%= bag.name %>">
 						<hr>
 						<p><span class="icon_char">Price</span> ¥<%= bag.price %></p>
 						<hr>
@@ -43,8 +43,8 @@
 								<% unless tag.id == bag.bag_tags.last.id %><br /><% end %>
 							<% end %>
 						</p>
-						<% @test = "http://www.test.com/" + bag.url_dp %>
-						<%= button_to '詳しい情報を見る', @test, class: "btn" %>
+						<% @amazon_link = "http://www.amazon.co.jp/gp/product/" + bag.url_dp + "/ref=as_li_ss_tl?ie=UTF8&linkCode=as2&tag=yuzutas0-22" %>
+						<%= button_to '詳しい情報を見る', @amazon_link, class: "btn" %>
 					</div>
 				</div>
 			<% end %>
