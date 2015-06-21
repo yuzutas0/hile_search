@@ -12,7 +12,7 @@ class BagItemsController < ApplicationController
 																long_side: @device.long_side, 
 																middle_side: @device.middle_side, 
 																short_side: @device.short_side, 
-														}).page(params[:page]).per(3).order(:id).includes(:bag_tags)
+														}).page(params[:page]).per(3).order(:id).includes({:bag_tags => :parent})
 			if @device.present? && @bags.present?
 
 				# edit data for view
