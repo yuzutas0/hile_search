@@ -14,9 +14,15 @@ html, body {
   height: 100%;
 }
 
+#container {
+  position: relative;
+  min-height: 100%;
+}
+
 header {
   width: 100%;
   padding: 10px 0;
+  height: 100px;
 }
 
 h1 {
@@ -34,14 +40,9 @@ header p {
   padding: 0 10px;
 }
 
-#container {
-  position: relative;
-  min-height: 100%;
-}
-
 main {
 	padding-top: 40px;
-  padding-bottom: 110px;
+  padding-bottom: 70px;
 }
 
 footer {

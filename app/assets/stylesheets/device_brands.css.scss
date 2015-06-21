@@ -1,6 +1,13 @@
-
-
 /* position */
+main.device_brands_main {
+	position: absolute;
+  top: 100px;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+}
+
 .device_brands_background {
 	width: 100%;
 }
@@ -12,7 +19,7 @@
 }
 
 .device_brands_container .device_brands_message {
-	padding-top: 20px;
+	padding: 20px 20px 0;
 }
 
 .device_brands_container select {
@@ -45,7 +52,7 @@ main.device_brands_main {
 	background: linear-gradient(125deg, #009, #f00), image-url("hiking-275796_1920_custom.jpg");
 	background-repeat: no-repeat;
 	background-size: cover;
-	background-position: left 0px bottom 70px;
+	background-position: left 0px bottom 0px;
 	background-blend-mode: screen;
 }
 
