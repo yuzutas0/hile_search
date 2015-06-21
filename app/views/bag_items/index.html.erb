@@ -14,7 +14,31 @@
 
 		<!-- search -->
 		<div class="bag_items_search">
-			<p>test</p>
+			<%= form_tag({ controller: :bag_items, action: :index }, {method: :get, id: :bag_items}) do %>
+				<!-- hidden -->
+				<input name="dii" value="<%= @device.id %>" type="hidden" />
+				<!-- tag -->
+				<div class="bag_items_search_tag_form">
+					<p>
+						<% @tags.each do |tag| %>
+							<%= tag.name %>：
+							<% tag.children.each do |child| %>
+								<label>
+									<% if @sbt.include?(child.id.to_s) %>
+										<input name="sbt[]" type="checkbox" value="<%= child.id %>" checked />
+									<% else %>
+										<input name="sbt[]" type="checkbox" value="<%= child.id %>" />
+									<% end %>
+									<%= child.name %>
+								</label>
+							<% end %>
+							<br />
+						<% end %>
+					</p>
+				</div>
+				<!-- 価格の高い順・安い順・指定なし -->
+				<p><%= submit_tag('この条件で再検索', name: nil, class: "btn btn-info") %></p>
+			<% end %>
 		</div>
 
 		<div class="row">
