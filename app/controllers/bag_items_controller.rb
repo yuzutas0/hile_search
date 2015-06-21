@@ -12,16 +12,40 @@ class BagItemsController < ApplicationController
 				@sbt = BagTag.pluck(:id)
 			end
 
+			# check params obp
+			@obp = params[:obp]
+			@obp = "none" if @obp.blank? || (@obp != "high" && @obp != "low")
+
 			# get bags by device
 			@device = DeviceItem.find(dii)
 			bag_id_by_tags = BagItem.joins(:bag_tags).where("bag_tag_id IN (:tags)", tags: @sbt).pluck(:id)
-			@bags = BagItem.where("long_side > :long_side AND middle_side > :middle_side AND \
-												(short_side = 0 OR short_side > :short_side) AND id IN (:id_by_tags)", {
-																long_side: @device.long_side, 
-																middle_side: @device.middle_side, 
-																short_side: @device.short_side, 
-																id_by_tags: bag_id_by_tags
-														}).page(params[:page]).per(3).order(:id).includes({:bag_tags => :parent})
+
+			if @obp == "high"
+				@bags = BagItem.where("long_side > :long_side AND middle_side > :middle_side AND \
+									(short_side = 0 OR short_side > :short_side) AND id IN (:id_by_tags)", {
+													long_side: @device.long_side, 
+													middle_side: @device.middle_side, 
+													short_side: @device.short_side, 
+													id_by_tags: bag_id_by_tags
+											}).page(params[:page]).per(3).order(:price).reverse_order.includes({:bag_tags => :parent})
+			elsif @obp == "low"
+				@bags = BagItem.where("long_side > :long_side AND middle_side > :middle_side AND \
+									(short_side = 0 OR short_side > :short_side) AND id IN (:id_by_tags)", {
+													long_side: @device.long_side, 
+													middle_side: @device.middle_side, 
+													short_side: @device.short_side, 
+													id_by_tags: bag_id_by_tags
+											}).page(params[:page]).per(3).order(:price).includes({:bag_tags => :parent})				
+			else
+				@bags = BagItem.where("long_side > :long_side AND middle_side > :middle_side AND \
+									(short_side = 0 OR short_side > :short_side) AND id IN (:id_by_tags)", {
+													long_side: @device.long_side, 
+													middle_side: @device.middle_side, 
+													short_side: @device.short_side, 
+													id_by_tags: bag_id_by_tags
+											}).page(params[:page]).per(3).order(:id).includes({:bag_tags => :parent})	
+			end
+					
 			if @device.present? && @bags.present?
 
 				# edit data for view

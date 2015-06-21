@@ -15,9 +15,9 @@
 		<!-- search -->
 		<div class="bag_items_search">
 			<%= form_tag({ controller: :bag_items, action: :index }, {method: :get, id: :bag_items}) do %>
-				<!-- hidden -->
-				<input name="dii" value="<%= @device.id %>" type="hidden" />
+
 				<!-- tag -->
+				<p>バッグの種類</p>
 				<div class="bag_items_search_tag_form">
 					<p>
 						<% @tags.each do |tag| %>
@@ -36,7 +36,29 @@
 						<% end %>
 					</p>
 				</div>
-				<!-- 価格の高い順・安い順・指定なし -->
+
+				<!-- order by price -->
+				<p>表示順</p>
+				<div class="bag_items_search_price_form">
+					<p>
+						<% if @obp.present? && @obp == "high" %>
+							<label><input name="obp" type="radio" value="no" />指定なし</label>
+							<label><input name="obp" type="radio" value="high" checked />価格が高い順</label>
+							<label><input name="obp" type="radio" value="low" />価格が低い順</label>
+						<% elsif @obp.present? && @obp == "low" %>
+							<label><input name="obp" type="radio" value="no" />指定なし</label>
+							<label><input name="obp" type="radio" value="high" />価格が高い順</label>
+							<label><input name="obp" type="radio" value="low" checked />価格が低い順</label>
+						<% else %>
+							<label><input name="obp" type="radio" value="no" checked />指定なし</label>
+							<label><input name="obp" type="radio" value="high" />価格が高い順</label>
+							<label><input name="obp" type="radio" value="low" />価格が低い順</label>
+						<% end %>
+					</p>
+				</div>
+
+				<!-- submit -->
+				<input name="dii" value="<%= @device.id %>" type="hidden" />
 				<p><%= submit_tag('この条件で再検索', name: nil, class: "btn btn-info") %></p>
 			<% end %>
 		</div>
