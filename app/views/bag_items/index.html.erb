@@ -17,25 +17,34 @@
 			<% for bag in @bags %>
 				<div class="col-xs-4">
 					<div class="bag_items_card">
-						<p><%= bag.id %><p>
 						<p><%= bag.name %><p>
-						<p>Image：<%= bag.image_url %><p>
-						<p>URL：<%= bag.url_dp %><p>
-						<p>¥<%= bag.price %><p>
-						<% if bag.depth.present? %>
-							<p>W:<%= bag.width %>cm, H:<%= bag.height %>cm, D:<%= bag.depth %>cm</p>
-						<% else %>
-							<p>W:<%= bag.width %>cm, H:<%= bag.height %>cm</p>
-						<% end %>
+						<hr>
+						<p>Image：<%= bag.image_url %></p>
+						<hr>
+						<p><span class="icon_char">Price</span> ¥<%= bag.price %></p>
+						<hr>
+						<p>
+							<span class="icon_char">Size</span>
+							<% if bag.depth.present? %>
+								W:<%= bag.width %>cm, H:<%= bag.height %>cm, D:<%= bag.depth %>cm
+							<% else %>
+								W:<%= bag.width %>cm, H:<%= bag.height %>cm
+							<% end %>
+						</p>
+						<hr>
 						<p>
 							<% bag.bag_tags.each do |tag| %>
-								<% if tag.present? && tag.parent.present? %>
-									<%= tag.parent.name %> <%= tag.parent.id %> - 
+								<i class="fa fa-tag"></i>
+								<% if tag.parent.present? %>
+									<%= tag.name %>（<%= tag.parent.name %>）
+								<% else %>
+									<%= tag.name %>
 								<% end %>
-								<%= tag.name %> <%= tag.id %>
 								<% unless tag.id == bag.bag_tags.last.id %><br /><% end %>
 							<% end %>
 						</p>
+						<% @test = "http://www.test.com/" + bag.url_dp %>
+						<%= button_to '詳しい情報を見る', @test, class: "btn" %>
 					</div>
 				</div>
 			<% end %>

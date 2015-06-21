@@ -16,6 +16,19 @@
 	padding: 20px;
 }
 
+.bag_items_card hr {
+	margin: 0 0 10px 0;
+}
+
+.bag_items_card .icon_char {
+	padding: 5px;
+	margin-right: 5px;
+}
+
+.bag_items_card form {
+	margin-top: 30px;
+}
+
 .bag_items_search {
 	height: auto;
 	margin-top: 60px;
@@ -32,6 +45,10 @@
 
 
 /* character */
+.bag_items_card .icon_char {
+	font-size: 11px;
+}
+
 .bag_items_search_tag_form p {
 	font-size: 11px;
 }
@@ -59,8 +76,21 @@ main.bag_items_main {
 
 .bag_items_card {
 	background: #fff;
+	box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.4);
+}
+
+.bag_items_card .icon_char {
+	color: #fff;
+	background: #aaa;
 }
 
 
 
 /* attribute */
+.bag_items_card .icon_char {
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+
+
