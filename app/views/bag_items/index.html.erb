@@ -67,7 +67,7 @@
 								<%= tag.name %>：
 								<% tag.children.each do |child| %>
 									<label>
-										<% if @sbt.include?(child.id.to_s) %>
+										<% if @sbt.include?(child.id) || @sbt.include?(child.id.to_s) %>
 											<input name="sbt[]" type="checkbox" value="<%= child.id %>" checked />
 										<% else %>
 											<input name="sbt[]" type="checkbox" value="<%= child.id %>" />
