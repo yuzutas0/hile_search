@@ -8,6 +8,7 @@ HileSearch::Application.configure do
   config.assets.compile = false
   config.assets.digest = true
   config.assets.version = '1.0'
+  config.force_ssl = false
   config.log_level = :info
   config.i18n.fallbacks = true
   config.active_support.deprecation = :notify
