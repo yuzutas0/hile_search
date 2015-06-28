@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'rails', '4.0.5'
-gem 'sqlite3'
 
 gem 'sass-rails', '~> 4.0.2'
 gem 'uglifier', '>= 1.3.0'
@@ -21,4 +20,14 @@ gem 'yaml_db', '0.3.0'
 
 group :doc do
   gem 'sdoc', require: false
+end
+
+group :development, :test do
+	gem 'sqlite3'
+end
+
+group :production do
+	gem 'mysql2', '0.3.17'
+  gem 'therubyracer', platforms: :ruby
+  gem 'rb-readline', '0.5.1'
 end
