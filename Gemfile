@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+ruby '2.1.1'
 
 gem 'rails', '4.0.5'
 
@@ -17,6 +18,7 @@ gem 'bootstrap-sass', '3.2.0.2'
 gem 'kaminari', '0.16.3'
 
 gem 'yaml_db', '0.3.0'
+# gem "non-stupid-digest-assets"
 
 group :doc do
   gem 'sdoc', require: false
