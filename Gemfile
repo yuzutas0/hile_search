@@ -23,11 +23,11 @@ group :doc do
 end
 
 group :development, :test do
-	gem 'sqlite3'
+  gem 'sqlite3'
 end
 
 group :production do
-	gem 'mysql2', '0.3.17'
+  gem 'mysql2', '0.3.17'
   gem 'therubyracer', platforms: :ruby
   gem 'rb-readline', '0.5.1'
 end
