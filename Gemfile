@@ -17,6 +17,8 @@ gem "font-awesome-rails", '4.2.0.0'
 gem 'bootstrap-sass', '3.2.0.2'
 gem 'kaminari', '0.16.3'
 
+gem 'yaml_db', '0.3.0'
+
 group :doc do
   gem 'sdoc', require: false
 end
