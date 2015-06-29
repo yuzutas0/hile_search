@@ -18,6 +18,7 @@ gem 'bootstrap-sass', '3.2.0.2'
 gem 'kaminari', '0.16.3'
 
 gem 'yaml_db', '0.3.0'
+gem 'google-analytics-rails', '0.0.6'
 # gem "non-stupid-digest-assets"
 
 group :doc do
