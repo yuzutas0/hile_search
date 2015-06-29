@@ -10,10 +10,16 @@ main.device_brands_main {
 
 .device_brands_background {
 	width: 100%;
+	position:absolute;
+	top: 45%;
+	left: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
 }
 
 .device_brands_container {
-	margin: 60px auto 25px;
+	margin: 0 auto;
 	width: 60%;
 	height: auto;
 }
