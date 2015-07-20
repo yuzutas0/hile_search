@@ -1,4 +1,8 @@
 /* position */
+.bag_items_main {
+	padding-top: 20px;
+}
+
 .bag_items_background {
 	margin: 0 auto;
 	padding: 0 15px;
@@ -7,7 +11,6 @@
 
 .bag_items_paginate {
 	height: auto;
-	margin-top: 20px;
 }
 
 .bag_items_card {
@@ -37,9 +40,13 @@
 	margin-bottom: 10px;
 }
 
+.bag_items_device {
+	margin-top: 60px;
+}
+
 .bag_items_search {
 	height: auto;
-	margin: 60px auto 30px;
+	margin: 20px auto 30px;
 }
 
 .bag_items_search_tag_form {

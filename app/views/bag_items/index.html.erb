@@ -1,16 +1,8 @@
 <main class="bag_items_main">
 	<div class="bag_items_background">
 
-		<!-- device -->
-		<div class="bag_items_device">
-			<p>
-				<% if @device.depth.present? %>
-					<%= @device.name %>（W:<%= @device.width %>cm, H:<%= @device.height %>cm, D:<%= @device.depth %>cm）が入るバッグ
-				<% else %>
-					<%= @device.name %>（W:<%= @device.width %>cm, H:<%= @device.height %>cm）が入るバッグ
-				<% end %>
-			</p>
-		</div>
+		<!-- paging -->
+		<div class="bag_items_paginate"><%= paginate(@bags, :window => 3) %></div>
 
 		<!-- bag -->
 		<div class="row">
@@ -50,8 +42,16 @@
 			<% end %>
 		</div>
 
-		<!-- paging -->
-		<div class="bag_items_paginate"><%= paginate(@bags, :window => 3) %></div>
+		<!-- device -->
+		<div class="bag_items_device">
+			<p>
+				<% if @device.depth.present? %>
+					<%= @device.name %>（W:<%= @device.width %>cm, H:<%= @device.height %>cm, D:<%= @device.depth %>cm）が入るバッグを検索しています。
+				<% else %>
+					<%= @device.name %>（W:<%= @device.width %>cm, H:<%= @device.height %>cm）が入るバッグを検索しています。
+				<% end %>
+			</p>
+		</div>
 
 		<!-- search -->
 		<div class="bag_items_search">
