@@ -1,57 +1,66 @@
 <main class="bag_items_main">
 	<div class="bag_items_background">
 
-		<!-- paging -->
-		<div class="bag_items_paginate"><%= paginate(@bags, :window => 3) %></div>
-
-		<!-- bag -->
-		<div class="row">
-			<% for bag in @bags %>
-				<div class="col-xs-4">
-					<div class="bag_items_card">
-						<p><%= bag.name %><p>
-						<hr>
-						<img src="<%= bag.image_url %>" alt="the_image_of_<%= bag.name %>">
-						<hr>
-						<p><span class="icon_char">Price</span> ¥<%= bag.price %></p>
-						<hr>
-						<p>
-							<span class="icon_char">Size</span>
-							<% if bag.depth.present? %>
-								W:<%= bag.width %>cm, H:<%= bag.height %>cm, D:<%= bag.depth %>cm
-							<% else %>
-								W:<%= bag.width %>cm, H:<%= bag.height %>cm
-							<% end %>
-						</p>
-						<hr>
-						<p>
-							<% bag.bag_tags.each do |tag| %>
-								<i class="fa fa-tag"></i>
-								<% if tag.parent.present? %>
-									<%= tag.name %>（<%= tag.parent.name %>）
-								<% else %>
-									<%= tag.name %>
-								<% end %>
-								<% unless tag.id == bag.bag_tags.last.id %><br /><% end %>
-							<% end %>
-						</p>
-						<% @amazon_link = "http://www.amazon.co.jp/gp/product/" + bag.url_dp + "/ref=as_li_ss_tl?ie=UTF8&linkCode=as2&tag=yuzutas0-22" %>
-						<%= button_to '詳しい情報を見る', @amazon_link, class: "btn" %>
-					</div>
-				</div>
-			<% end %>
-		</div>
-
 		<!-- device -->
 		<div class="bag_items_device">
 			<p>
 				<% if @device.depth.present? %>
-					<%= @device.name %>（W:<%= @device.width %>cm, H:<%= @device.height %>cm, D:<%= @device.depth %>cm）が入るバッグを検索しています。
+					<%= @device.name %>（W:<%= @device.width %>cm, H:<%= @device.height %>cm, D:<%= @device.depth %>cm）が入るバッグ
 				<% else %>
-					<%= @device.name %>（W:<%= @device.width %>cm, H:<%= @device.height %>cm）が入るバッグを検索しています。
+					<%= @device.name %>（W:<%= @device.width %>cm, H:<%= @device.height %>cm）が入るバッグ
+				<% end %>
+				<% if @bags.present? %>
+					 | <%= @bags.total_count %>件中<%= @bags.offset_value + 1 %>-<%= @bags.offset_value + @bags.size %>件を表示
 				<% end %>
 			</p>
 		</div>
+
+		<!-- paging -->
+		<div class="bag_items_paginate_top"><%= paginate(@bags, :window => 3) %></div>
+
+		<!-- bag -->
+		<% for bag_set in @bags.each_slice(3) %>
+			<div class="row">
+				<% for bag in bag_set %>
+					<div class="col-xs-4">
+						<div class="bag_items_card">
+							<p><%= bag.name %><p>
+							<hr>
+							<img src="<%= bag.image_url %>" alt="the_image_of_<%= bag.name %>">
+							<hr>
+							<p><span class="icon_char">Price</span> ¥<%= bag.price %></p>
+							<hr>
+							<p>
+								<span class="icon_char">Size</span>
+								<% if bag.depth.present? %>
+									W:<%= bag.width %>cm, H:<%= bag.height %>cm, D:<%= bag.depth %>cm
+								<% else %>
+									W:<%= bag.width %>cm, H:<%= bag.height %>cm
+								<% end %>
+							</p>
+							<hr>
+							<p>
+								<% bag.bag_tags.each do |tag| %>
+									<i class="fa fa-tag"></i>
+									<% if tag.parent.present? %>
+										<%= tag.name %>（<%= tag.parent.name %>）
+									<% else %>
+										<%= tag.name %>
+									<% end %>
+									<% unless tag.id == bag.bag_tags.last.id %><br /><% end %>
+								<% end %>
+							</p>
+							<% @amazon_link = "http://www.amazon.co.jp/gp/product/" + bag.url_dp + "/ref=as_li_ss_tl?ie=UTF8&linkCode=as2&tag=yuzutas0-22" %>
+							<%= button_to '詳しい情報を見る', @amazon_link, class: "btn" %>
+						</div>
+					</div>
+				<% end %>
+			</div>
+		<% end %>
+
+		<!-- paging -->
+		<div class="bag_items_paginate_bottom"><%= paginate(@bags, :window => 3) %></div>
+		<hr>
 
 		<!-- search -->
 		<div class="bag_items_search">
@@ -85,17 +94,45 @@
 					<div class="bag_items_search_price_form">
 						<p>
 							<% if @obp.present? && @obp == "high" %>
-								<label><input name="obp" type="radio" value="no" />指定なし</label>
+								<label><input name="obp" type="radio" value="none" />指定なし</label>
 								<label><input name="obp" type="radio" value="high" checked />価格が高い順</label>
 								<label><input name="obp" type="radio" value="low" />価格が低い順</label>
 							<% elsif @obp.present? && @obp == "low" %>
-								<label><input name="obp" type="radio" value="no" />指定なし</label>
+								<label><input name="obp" type="radio" value="none" />指定なし</label>
 								<label><input name="obp" type="radio" value="high" />価格が高い順</label>
 								<label><input name="obp" type="radio" value="low" checked />価格が低い順</label>
 							<% else %>
-								<label><input name="obp" type="radio" value="no" checked />指定なし</label>
+								<label><input name="obp" type="radio" value="none" checked />指定なし</label>
 								<label><input name="obp" type="radio" value="high" />価格が高い順</label>
 								<label><input name="obp" type="radio" value="low" />価格が低い順</label>
+							<% end %>
+						</p>
+					</div>
+
+					<!-- number of display -->
+					<p>表示数</p>
+					<div class="bag_items_search_number_form">
+						<p>
+							<% if @nod.present? && @nod == "9" %>
+								<label><input name="nod" type="radio" value="3" />3件</label>
+								<label><input name="nod" type="radio" value="9" checked />9件</label>
+								<label><input name="nod" type="radio" value="15" />15件</label>
+								<label><input name="nod" type="radio" value="30" />30件</label>
+							<% elsif @nod.present? && @nod == "15" %>
+								<label><input name="nod" type="radio" value="3" />3件</label>
+								<label><input name="nod" type="radio" value="9" />9件</label>
+								<label><input name="nod" type="radio" value="15" checked />15件</label>
+								<label><input name="nod" type="radio" value="30" />30件</label>
+							<% elsif @nod.present? && @nod == "30" %>
+								<label><input name="nod" type="radio" value="3" />3件</label>
+								<label><input name="nod" type="radio" value="9" />9件</label>
+								<label><input name="nod" type="radio" value="15" />15件</label>
+								<label><input name="nod" type="radio" value="30" checked />30件</label>
+							<% else @nod.present? && @nod == "30" %>
+								<label><input name="nod" type="radio" value="3" checked />3件</label>
+								<label><input name="nod" type="radio" value="9" />9件</label>
+								<label><input name="nod" type="radio" value="15" />15件</label>
+								<label><input name="nod" type="radio" value="30" />30件</label>
 							<% end %>
 						</p>
 					</div>
