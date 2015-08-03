@@ -15,15 +15,31 @@ class BagItemsController < ApplicationController
 			# check params cot
 			@cot = params[:cot]
 			if @cot.present? && @cot == "and"
-				sbt_and_query = ""
-				for sbt_item in @sbt
-					sbt_and_query = sbt_and_query + "bag_tag_id = " + sbt_item.to_s
-					sbt_and_query = sbt_and_query + " AND " unless sbt_item == @sbt.last
+				# AND - 1 : get by OR
+				bag_object_by_tags = BagItem.joins(:bag_tags)
+																		.where("bag_tag_id IN (:tags)", tags: @sbt)
+																		.select("bag_items.id AS id, bag_tags.id AS bag_tag_id")
+																		.order("id")
+				# AND - 2 : count by item * tag
+				bag_object_hash = {}
+				for bag_object in bag_object_by_tags
+					if bag_object_hash.include?(bag_object.id)
+						bag_object_hash[bag_object.id] = bag_object_hash[bag_object.id] + 1
+					else
+						bag_object_hash[bag_object.id] = 1
+					end
 				end
-				bag_id_by_tags = BagItem.joins(:bag_tags).where(sbt_and_query).pluck(:id)
+				# AND - 3 : check by count
+				bag_id_by_tags = []
+				bag_object_hash.each{|key, value|
+					bag_id_by_tags.push(key) if value == @sbt.length
+				}
 			else
+				# OR
 				@cot = "or"
-				bag_id_by_tags = BagItem.joins(:bag_tags).where("bag_tag_id IN (:tags)", tags: @sbt).pluck(:id)
+				bag_id_by_tags = BagItem.joins(:bag_tags)
+																.where("bag_tag_id IN (:tags)", tags: @sbt)
+																.pluck(:id)
 			end
 
 			# check params obp
