@@ -15,6 +15,15 @@
 			</p>
 		</div>
 
+		<!-- count zero -->
+		<% if @bags.blank? %>
+			<hr>
+			<div class="bag_items_card">
+				<h3>該当する商品はありません。</h3>
+				<p>条件を変えて再度検索してください。</p>
+			</div>
+		<% end %>
+
 		<!-- paging -->
 		<div class="bag_items_paginate_top"><%= paginate(@bags, :window => 3) %></div>
 
@@ -85,6 +94,20 @@
 									</label>
 								<% end %>
 								<br />
+							<% end %>
+						</p>
+					</div>
+
+					<!-- conbination of tags -->
+					<p>検索方法</p>
+					<div class="bag_items_search_conbination_form">
+						<p>
+							<% if @cot.present? && @cot == "and" %>
+								<label><input name="cot" type="radio" value="or">OR検索</label>
+								<label><input name="cot" type="radio" value="and" checked>AND検索</label>
+							<% else %>
+								<label><input name="cot" type="radio" value="or" checked>OR検索</label>
+								<label><input name="cot" type="radio" value="and">AND検索</label>
 							<% end %>
 						</p>
 					</div>
