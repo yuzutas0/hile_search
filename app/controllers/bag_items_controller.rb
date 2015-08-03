@@ -12,6 +12,20 @@ class BagItemsController < ApplicationController
 				@sbt = BagTag.pluck(:id)
 			end
 
+			# check params cot
+			@cot = params[:cot]
+			if @cot.present? && @cot == "and"
+				sbt_and_query = ""
+				for sbt_item in @sbt
+					sbt_and_query = sbt_and_query + "bag_tag_id = " + sbt_item.to_s
+					sbt_and_query = sbt_and_query + " AND " unless sbt_item == @sbt.last
+				end
+				bag_id_by_tags = BagItem.joins(:bag_tags).where(sbt_and_query).pluck(:id)
+			else
+				@cot = "or"
+				bag_id_by_tags = BagItem.joins(:bag_tags).where("bag_tag_id IN (:tags)", tags: @sbt).pluck(:id)
+			end
+
 			# check params obp
 			@obp = params[:obp]
 			@obp = "none" if @obp.blank? || (@obp != "high" && @obp != "low")
@@ -20,9 +34,9 @@ class BagItemsController < ApplicationController
 			@nod = params[:nod]
 			@nod = "3" if @nod.blank? || (@nod.to_i != 9 && @nod.to_i != 15 && @nod.to_i != 30)
 
-			# get bags by device
+			# check params dii
 			@device = DeviceItem.find(dii)
-			bag_id_by_tags = BagItem.joins(:bag_tags).where("bag_tag_id IN (:tags)", tags: @sbt).pluck(:id)
+			redirect_to :root if @device.blank?
 
 			# select object
 			if @obp == "high"
@@ -50,18 +64,17 @@ class BagItemsController < ApplicationController
 													id_by_tags: bag_id_by_tags
 											}).page(params[:page]).per(@nod.to_i).order(:id).includes({:bag_tags => :parent})	
 			end
-					
-			if @device.present? && @bags.present?
 
-				# edit data for view
+			# edit data for view					
+			if @bags.present?
 				@bags.each do |bag|
 					bag.name = bag.name[0...18] + "..." if bag.name.length > 19
 				end
-
-				# view
-				@tags = BagTag.where('tree_depth = ?', 0).includes(:children)
-				return
 			end
+
+			# view
+			@tags = BagTag.where('tree_depth = ?', 0).includes(:children)
+			return
 		end
 		redirect_to :root
 	end
