@@ -34,6 +34,22 @@ class BagItemsController < ApplicationController
 				bag_object_hash.each{|key, value|
 					bag_id_by_tags.push(key) if value == @sbt.length
 				}
+				# If There Is Model Class Of Middle-Table
+				# The Same Thing Will Be Done By SQL...
+				#
+				# SELECT
+				# 	bag_item_id
+				# FROM
+				# 	BagItemsBagTags
+				# WHERE
+				# 	bag_tag_id
+				# IN
+				# 	(:tags)
+				# GROUP BY
+				# 	bag_item_id
+				# HAVING
+				# 	count(bag_tag_id) = (:tags.count)
+				# 
 			else
 				# OR
 				@cot = "or"
