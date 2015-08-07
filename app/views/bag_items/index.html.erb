@@ -79,6 +79,8 @@
 
 					<!-- tag -->
 					<p>種類</p>
+					<%= button_to_function "全て選択", "BagItemsSearchTagAllChecked(true)" %>
+					<%= button_to_function "全て解除", "BagItemsSearchTagAllChecked(false)" %>
 					<div class="bag_items_search_tag_form">
 						<p>
 							<% @tags.each do |tag| %>
